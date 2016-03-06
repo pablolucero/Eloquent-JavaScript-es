@@ -68,7 +68,7 @@ formas que requerirán que hagas conexiones adicionales.
 
 Es tu responsabilidad realizar el esfuerzo necesario. Cuando se te haga difícil
 seguir este libro, no concluyas rápidamente nada acerca de tus capacidades.
-"Tu eres bueno", sólo necesitas mantener el paso. Toma un respiro,
+Tu eres bueno, sólo necesitas mantener el paso. Toma un respiro,
 vuelve a leer el material, y _siempre_ asegúrate de leer y entender
 los programas de ejemplo y los ((ejercicios)). Aprender es un trabajo duro,
 pero todo lo que aprendas ahora es tuyo y hará el aprendizaje cada vez más fácil.
