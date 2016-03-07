@@ -87,7 +87,7 @@ computadora, y aún así controla las acciones realizadas en esta misma memoria.
 Las analogías que tratan de comparar a las computadoras con objetos que conocemos
 tienden a quedarse cortas. Una que se ajusta superficialmente es la de
 máquina, un montón de piezas separadas que se relacionan, y para hacerlo
-funcionar, tenemos que considerar las formas en que esas piezas interaccionan y contribuyen al funcionamiento del todo.
+funcionar, tenemos que considerar las formas en que esas piezas se interconectan y contribuyen al funcionamiento del todo.
 
 (((computadora)))Una computadora es una máquina que actuá como anfitriona de
 estas máquinas inmateriales. Las computadoras por sí mismas sólo pueden hacer
