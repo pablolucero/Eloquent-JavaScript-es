@@ -402,7 +402,7 @@ link:21_skillsharing.html#skillsharing[sitio dinámico].
 La parte del lenguaje del libro empieza con cuatro capítulos para presentar
 la estructura básica de JavaScript. Estos presentan
 link:02_program_structure.html#program_structure[estructuras de control]
-(como la palabra `while` que viste ene esta introducción),
+(como la palabra `while` que viste en esta introducción),
 link:03_functions.html#functions[funciones] (escribir tus propias operaciones),
 y link:04_data.html#data[estructuras de datos]. Después de esto, serás capaz de
 escribir programas simples. Después, los capítulos
