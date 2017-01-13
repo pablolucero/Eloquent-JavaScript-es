@@ -167,7 +167,7 @@ funciones dentro de ella:
 
 [source,javascript]
 ----
-var paisaje = function() {
+var landscape = function() {
   var resultado = "";
   var meseta = function(tamano) {
     for (var cuenta = 0; cuenta < size; cuenta++)
