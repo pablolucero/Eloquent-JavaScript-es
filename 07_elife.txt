@@ -4,44 +4,28 @@
 :load_files: ["code/chapter/07_elife.js", "code/animateworld.js"]
 :zip: html
 
-= Project: Electronic Life =
+= Proyecto: Vida Electrónica =
 
 [chapterquote="true"]
 [quote, Edsger Dijkstra, The Threats to Computing Science]
 ____
-[...] the question of whether Machines Can Think [...] is about as
-relevant as the question of whether Submarines Can Swim.
+[...] La pregunta de si las máquinas pueden pensar [...] es tan relevante como la pregunta de si los submarinos pueden nadar.
 ____
 
 (((artificial intelligence)))(((Dijkstra+++,+++ Edsger)))(((project
 chapter)))(((reading code)))(((writing code)))In “project” chapters,
-I'll stop pummeling you with new theory for a brief moment and
-instead work through a program with you. Theory is indispensable when
-learning to program, but it should be accompanied by reading and
-understanding nontrivial programs.
+En los capítulos de proyecto, dejaré de abrumarte con teoría nueva por un breve momento, y en lugar de eso trabajaremos a través de un programa juntos. La teoría es indispensable cuando aprendemos a programar, pero debería ser acompañada de lecturas y la comprensión de programas no triviales.
 
-(((artificial life)))(((electronic life)))(((ecosystem)))Our
-project in this chapter is to build a virtual ecosystem, a little
-world populated with ((critter))s that move around and struggle for
-survival.
+(((artificial life)))(((electronic life)))(((ecosystem)))Nuestro proyecto en este capítulo es construir un ecosistema virtual, un mundo pequeño poblado con bichos que se mueven alrededor y luchan por sobrevivir.
 
-== Definition ==
+== Definición ==
 
-(((dimensions)))(((electronic life)))To make this
-task manageable, we will radically simplify the concept of a
-_((world))_. Namely, a world will be a two-dimensional ((grid)) where
-each entity takes up one full square of the grid. On every _((turn))_,
-the critters all get a chance to take some action.
+(((dimensions)))(((electronic life)))Para hacer esta tarea manejable, nosotros simplificaremos radicalmente el concepto de mundo (_((world))_). Es decir un mundo será una cuadricula de dos dimensiones donde cada entidad ocupa un cuadro completo de ella. En cada _((turn))_, todos los bichos tienen oportunidad de hacer alguna acción.
 
-(((discretization)))(((simulation)))Thus, we chop both time and space
-into units with a fixed size: squares for space and turns for time. Of
-course, this is a somewhat crude and inaccurate ((approximation)). But
-our simulation is intended to be amusing, not accurate, so we can
-freely cut such corners.
+(((discretization)))(((simulation)))Por lo tanto, cortamos ambos tiempo y espacio en dos unidades con un tamaño fijo: cuadros para espacio y turnos para tiempo. Por supuesto, esto es una burda e imprecisa ((aproximación)). Pero nuestra simulación pretende ser entretenida, no precisa, así que podemos acortar libremente las dimensiones.
 
 [[plan]]
-(((array)))We can define a world with a _plan_, an array of
-strings that lays out the world's grid using one character per square.
+(((array)))Podemos definir un mundo como un _plan_, una matriz de cadenas que establece la cuadrícula del mundo usando un carácter por cuadro. .
 
 // include_code
 
@@ -60,28 +44,15 @@ var plan = ["############################",
             "#    #                     #",
             "############################"];
 ----
+El carácter "#" en este programa representa paredes y rocas, y el carácter "o" representa bichos (_critters_). Los espacios, como posiblemente habrás adivinado, son espacios vacíos.
 
-The “#” characters in this plan represent ((wall))s and rocks, and the
-“o” characters represent critters. The spaces, as you might have
-guessed, are empty space.
-
-(((object)))(((toString method)))(((turn)))A plan array can be
-used to create a ((world)) object. Such an object keeps track of the
-size and content of the world. It has a `toString` method, which
-converts the world back to a printable string (similar to the plan it
-was based on) so that we can see what's going on inside. The world
-object also has a `turn` method, which allows all the critters in it to
-take one turn and updates the world to reflect their actions.
+(((object)))(((toString method)))(((turn)))Una matriz unidimensional puede ser usada para crear un objeto mundo (_world_). Tal objeto mantiene seguimiento del tamaño y el contenido. El mundo tiene un método _toString_ que convierte al mundo nuevamente en una cadena imprimible (parecida al programa en el que se basó) de manera que podamos ver qué es lo que está pasando dentro. El objeto mundo también tiene un método _turn_, el cual permite a todos los bichos que lo habitan tomar un turno y luego actualizar el mundo reflejando sus acciones.
 
 [[grid]]
-== Representing space ==
+== Representando el espacio. ==
 
-(((array,as grid)))(((Vector type)))(((coordinates)))The ((grid))
-that models the world has a fixed width and height. Squares are
-identified by their x- and y-coordinates. We use a simple type,
-`Vector` (as seen in the exercises for the
-link:06_object.html#exercise_vector[previous chapter]), to represent
-these coordinate pairs.
+(((array,as grid)))(((Vector type)))(((coordinates)))
+La cuadrícula (_grid_) que modela el mundo tiene un ancho y altura fija. Los cuadros son identificados por sus coordenadas "X" y "Y". Usamos un tipo sencillo, _Vector_ (como los vistos en los ejercicios del link:06_object.html#exercise_vector[capítulo anterior]), para representar estas coordenadas en pares.
 
 // include_code
 
@@ -96,15 +67,9 @@ Vector.prototype.plus = function(other) {
 };
 ----
 
-(((object)))(((encapsulation)))Next, we need an object type that
-models the grid itself. A grid is part of a world, but we are making
-it a separate object (which will be a property of a ((world)) object)
-to keep the world object itself simple. The world should concern
-itself with world-related things, and the grid should concern itself with grid-related things.
+(((object)))(((encapsulation))) A continuacion, necesitamos un tipo de objeto que modele por si mismo la cuadricula (_grid_). La cuadricula es parte del mundo, pero nosotros estamos haciendo la cuadricula como un objeto separado (que sera una propiedad del objeto mundo) para mantener el objeto _world_ simple. El mundo debe ocuparse de las cosas relacionadas con el mundo, y la cuadricula debe ocuparse de las cosas relacionadas con la cuadricula. 
 
-(((array)))(((data structure)))To store a grid of values, we have
-several options. We can use an array of row arrays and use two
-property accesses to get to a specific square, like this:
+(((array)))(((data structure)))Para almacenar una cuadricula de valores, tenemos varias opciones. Podemos utilizar una matriz de matrices de filas (_array of row arrays_) y utilizar dos propiedades de acceso para llegar a una cruadricula específica:
 
 [source,javascript]
 ----
@@ -114,9 +79,7 @@ console.log(grid[1][2]);
 // → bottom right
 ----
 
-(((array,indexing)))(((coordinates)))(((grid)))Or we can use a
-single array, with size width × height, and decide that the element at
-(_x_,_y_) is found at position _x_ + (_y_ × width) in the array.
+(((array,indexing)))(((coordinates)))(((grid)))O podemos utilizar una sola matriz, con el tamaño de ancho x alto, y decidir que el elemento en (_x_,_y_) se encuentra en la posición _x_ + (_y_ x ancho) de la matriz.
 
 [source,javascript]
 ----
@@ -127,15 +90,9 @@ console.log(grid[2 + (1 * 3)]);
 ----
 
 (((encapsulation)))(((abstraction)))(((Array constructor)))(((array,creation)))(((array,length
-of)))Since the actual access to this array will be wrapped in methods
-on the grid object type, it doesn't matter to outside code which
-approach we take. I chose the second representation because it makes
-it much easier to create the array. When calling the `Array`
-constructor with a single number as an argument, it creates a new empty
-array of the given length.
+of)))Dado que el acceso real a esta matriz (_Array_) será envuelto en métodos en el objeto de tipo cuadricula, no le importa al código externo cual enfoque tomamos. Elegí la segunda representación, ya que hace que sea mucho más fácil crear la matriz. Al llamar al constructor de _Array_ con un solo número como argumento, se crea una nueva matriz vacía de la longitud dada.
 
-(((Grid type)))This code defines the `Grid` object, with some basic
-methods:
+(((Grid type)))Este código define el objeto cuadricula (_Grid_) con algunos métodos básicos:
 
 // include_code
 
@@ -158,7 +115,7 @@ Grid.prototype.set = function(vector, value) {
 };
 ----
 
-And here is a trivial test:
+Y aquí es una prueba trivial:
 
 [source,javascript]
 ----
@@ -170,27 +127,12 @@ console.log(grid.get(new Vector(1, 1)));
 // → X
 ----
 
-== A critter's programming interface ==
+== Una interfaz para programar bichos (_critter_) ==
 
-(((record)))(((electronic life)))(((interface)))Before we can
-start on the `World` ((constructor)), we must get more specific about
-the ((critter)) objects that will be living inside it. I mentioned
-that the world will ask the critters what actions they want to take.
-This works as follows: each critter object has an `act` ((method))
-that, when called, returns an _action_. An action is an object with a
-`type` property, which names the type of action the critter wants to
-take, for example `"move"`. The action may also contain extra
-information, such as the direction the critter wants to move in.
+(((record)))(((electronic life)))(((interface)))Antes de que podamos comenzar con nuestro _constructor_ en nuestro mundo, debemos obtener más especificaciones sobre los objetos _critter_ que estarán viviendo dentro de él. Mencioné que el mundo preguntará a las criaturas qué acciones quieren tomar. Esto funciona de esta manera: cada objeto _critter_ tiene un método _act_ que, cuando se lo llama, devuelve una acción. Una acción es un objeto con una propiedad de tipo (_type_), que indica el tipo de acción que el _critter_ quiere tomar, por ejemplo "mover". La acción también puede contener información adicional, como la dirección en la que el _critter_ quiere moverse.
 
 [[directions]]
-(((Vector type)))(((View type)))(((directions object)))(((object,as map)))Critters are terribly myopic and can see only the
-squares directly around them on the grid. But even this limited vision
-can be useful when deciding which action to take. When the `act`
-method is called, it is given a _view_ object that allows the critter
-to inspect its surroundings. We name the eight surrounding squares by
-their ((compass direction))s: `"n"` for north, `"ne"` for northeast,
-and so on. Here's the object we will use to map from direction names
-to coordinate offsets:
+(((Vector type)))(((View type)))(((directions object)))(((object,as map)))Los _Critters_ son terriblemente miopes y pueden ver solamente los cuadrados directamente alrededor de ellos en la cuadricula. Pero incluso esta visión limitada puede ser útil al decidir qué acción tomar. Cuando se llama al método _act_, se recibe un objeto _view_ que permite al _critter_ inspeccionar su entorno. Nombramos los ocho cuadrados circundantes por sus direcciones de la brújula: "_n_" para el norte, "_ne_" para el noreste, y así sucesivamente. Este es el objeto que usaremos para asignar los nombres de dirección a los desplazamientos de coordenadas:
 
 // include_code
 
@@ -208,20 +150,9 @@ var directions = {
 };
 ----
 
-(((View type)))The view object has a method `look`, which takes a
-direction and returns a character, for example `"#"` when there is a
-wall in that direction, or `" "` (space) when there is nothing there.
-The object also provides the convenient methods `find` and `findAll`.
-Both take a map character as an argument. The first returns a direction
-in which the character can be found next to the critter or returns `null` if
-no such direction exists. The second returns an array containing all
-directions with that character. For example, a creature sitting left
-(west) of a wall will get `["ne", "e", "se"]` when calling `findAll`
-on its view object with the `"#"` character as argument.
+(((View type)))El objeto _view_ tiene un método _look_, que toma una dirección y devuelve un carácter, por ejemplo "_#_" cuando hay una pared en esa dirección, o " " (espacio) cuando no hay nada allí. El objeto también proporciona los métodos convenientes _find_ y _findAll_. Ambos toman un carácter de mapa como argumento. El primero devuelve una dirección en la que el carácter se puede encontrar con respecto al _critter_ o devuelve _null_ si no existe tal dirección. El segundo devuelve una matriz que contiene todas las direcciones con ese carácter. Por ejemplo, una criatura sentada a la izquierda (al oeste) de una pared obtendrá ["_ne_", "_e_", "_se_"] al llamar a _findAll_ en su objeto de vista con el carácter "_#_" como argumento.
 
-(((bouncing)))(((behavior)))(((BouncingCritter type)))Here is a
-simple, stupid critter that just follows its nose until it hits an
-obstacle and then bounces off in a random open direction:
+(((bouncing)))(((behavior)))(((BouncingCritter type)))Aquí está un _critter_ simple y estúpido que sigue su nariz hasta que golpea un obstáculo y luego rebota en una dirección al azar:
 
 // include_code
 
@@ -245,35 +176,15 @@ BouncingCritter.prototype.act = function(view) {
 ----
 
 (((random number)))(((Math.random function)))(((randomElement
-function)))(((array,indexing)))The `randomElement` helper
-function simply picks a random element from an array, using
-`Math.random` plus some arithmetic to get a random index. We'll use
-this again later because randomness can be useful in ((simulation))s.
+function)))(((array,indexing)))La función de ayuda _randomElement_ simplemente selecciona un elemento aleatorio de una matriz (_Array_), usando _Math.random_ más algún cálculo aritmético obtendremos un índice aleatorio. Esto lo usaremos más adelante porque la aleatoriedad puede ser útil en simulaciones.
 
-(((Object.keys function)))To pick a random direction, the
-`BouncingCritter` constructor calls `randomElement` on an array of
-direction names. We could also have used `Object.keys` to get this
-array from the `directions` object we defined
-link:07_elife.html#directions[earlier], but that provides no
-guarantees about the order in which the properties are listed. In most
-situations, modern JavaScript engines will return properties in the
-order they were defined, but they are not required to.
+(((Object.keys function)))Para escoger una dirección aleatoria, el constructor _BouncingCritter_ llama a _randomElement_ en una matriz _directionNames_. También podríamos haber usado _Object.keys_ para obtener esta matriz del objeto _directions_ que definimos anteriormente, pero eso no proporciona garantías sobre el orden en el que se enumeran las propiedades. En la mayoría de las situaciones, los motores de JavaScript modernos devolverán las propiedades en el orden en que se definieron, pero no necesariamente.
 
-(((|| operator)))(((null)))The “++|| "s"++” in the `act` method is
-there to prevent `this.direction` from getting the value `null` if the
-critter is somehow trapped with no empty space around it (for example
-when crowded into a corner by other critters).
+(((|| operator)))(((null)))El “++|| "S"++” en el método _act_ está ahí para evitar que _this.direction_ de valor _null_ si el _critter_ está de alguna manera atrapado sin espacio vacío alrededor de él (por ejemplo, cuando se aglomeran en una esquina con otros _critters_).
 
-== The world object ==
+== El objeto del mundo ==
 
-(((World type)))(((electronic life)))Now we can start on the
-`World` object type. The ((constructor)) takes a plan (the array of
-strings representing the world's grid, described
-link:07_elife.html#grid[earlier]) and a _((legend))_ as arguments. A
-legend is an object that tells us what each character in the map
-means. It contains a constructor for every character—except for the
-space character, which always refers to `null`, the value we'll use to
-represent empty space.
+(((World type)))(((electronic life)))Ahora podemos comenzar con el tipo de objeto _World_. El constructor toma un plan (la matriz de cadenas que representa la cuadrícula del mundo, link:07_elife.html#grid[descrita] anteriormente) y una leyenda (_legend_) como argumentos. Una leyenda es un objeto que nos dice qué significa cada carácter en el mapa. Contiene un constructor para cada carácter, excepto el carácter de espacio, que siempre refiere a _null_ y es el valor que usaremos para representar el espacio vacío.
 
 // include_code
 
@@ -300,17 +211,10 @@ function World(map, legend) {
 }
 ----
 
-(((elementFromChar function)))(((object,as map)))In `elementFromChar`,
-first we create an instance of the right type by looking up the
-character's constructor and applying `new` to it. Then we add an
-`originChar` ((property)) to it to make it easy to find out what
-character the element was originally created from.
+(((elementFromChar function)))(((object,as map)))En _elementFromChar_, primero creamos una _instance_ del tipo correcto buscando el constructor del carácter y aplicándole _new_. A continuación, agregamos una propiedad _originChar_ a ella para que sea fácil averiguar de qué carácter se creó el elemento originalmente.
 
 (((toString method)))(((nesting,of loops)))(((for
-loop)))(((coordinates)))We need this `originChar` property when
-implementing the world's `toString` method. This method builds up a
-maplike string from the world's current state by performing a
-two-dimensional loop over the squares on the grid.
+loop)))(((coordinates)))Necesitamos esta propiedad _originChar_ al implementar el método _toString_ de _word_. Este método construye una cadena _maplike_ del estado actual del mundo realizando un bucle bidimensional sobre los cuadros de la cuadrícula.
 
 // include_code
 
@@ -336,9 +240,7 @@ World.prototype.toString = function() {
 };
 ----
 
-(((electronic life)))(((constructor)))(((Wall type)))A ((wall)) is
-a simple object—it is used only for taking up space and has no
-`act` method.
+(((electronic life)))(((constructor)))(((Wall type)))Una pared es un objeto simple: se usa sólo para ocupar espacio y no tiene método _act_.
 
 // include_code
 
@@ -347,10 +249,7 @@ a simple object—it is used only for taking up space and has no
 function Wall() {}
 ----
 
-(((World type)))When we try the `World` object by creating an
-instance based on the plan from link:07_elife.html#plan[earlier in the
-chapter] and then calling `toString` on it, we get a string very
-similar to the plan we put in.
+(((World type)))Cuando probamos el objeto _World_ creando una instancia basada en el plan del link:07_elife.html#plan[capítulo anterior] y luego invocando _toString_ sobre él, obtenemos una cadena muy similar al plan.
 
 // include_code strip_log
 // test: trim
@@ -374,34 +273,18 @@ console.log(world.toString());
 //   ############################
 ----
 
-== this and its scope ==
+== _This_ y su alcance ==
 
 (((forEach
 method)))(((function,scope)))(((this)))(((scope)))(((self
-variable)))(((global object)))The `World` ((constructor)) contains a
-call to `forEach`. One interesting thing to note is that inside the
-function passed to `forEach`, we are no longer directly in the
-function scope of the constructor. Each function call gets its own
-`this` binding, so the `this` in the inner function does _not_
-refer to the newly constructed object that the outer `this` refers to.
-In fact, when a function isn't called as a method, `this` will refer
-to the global object.
+variable)))(((global object)))El constructor _World_ contiene una llamada a _forEach_. Una cosa interesante a notar es que dentro de la función pasada a _forEach_ ya no estamos directamente en el ámbito de funciones del _constructor_. Cada llamada de función obtiene su propia vinculación para _this_, por lo que el _this_ en la función interna no se refiere al mismo objeto en la­ nueva construcción que se refiere _this_ en la funcion externa.  De hecho, cuando una función no se llama como un (método), _this_ hará referencia al objeto global.
 
-This means that we can't write `this.grid` to access the grid from
-inside the ((loop)). Instead, the outer function creates a normal
-local variable, `grid`, through which the inner function gets access
-to the grid.
+Esto significa que no podemos escribir _this.grid_ para acceder a la cuadrícula desde dentro del bucle. En su lugar, la función externa crea una variable local normal, _grid_, a través de la cual la función interna obtiene acceso a la cuadrícula.
 
 (((future)))(((ECMAScript 6)))(((arrow function)))(((self
-variable)))This is a bit of a design blunder in JavaScript.
-Fortunately, the next version of the language provides a solution for
-this problem. Meanwhile, there are workarounds. A common pattern is to
-say `var self = this` and from then on refer to `self`, which is a
-normal variable and thus visible to inner functions.
+variable)))Esto es un poco un error de diseño en JavaScript. Afortunadamente, la siguiente versión del lenguaje proporciona una solución para este problema. Mientras tanto, hay soluciones. Un patrón común es decir _var self = this_ y a partir de entonces se refiere a _self_, que es una variable normal y, por lo tanto, visible a las funciones internas.
 
-(((bind method)))(((this)))Another solution is to use the `bind`
-method, which allows us to provide an explicit `this` object to bind
-to.
+(((bind method)))(((this)))Otra solución es utilizar el método _bind_, que nos permite proporcionar un objeto explícito a enlazar.
 
 [source,javascript]
 ----
@@ -417,16 +300,9 @@ console.log(test.addPropTo([5]));
 // → [15]
 ----
 
-(((map method)))The function passed to `map` is the result of the
-`bind` call and thus has its `this` bound to the first argument given
-to ++bind++—the outer function's `this` value (which holds the `test`
-object).
+(((map method)))La función pasada al _map_ es el resultado de la llamada de enlace (_bind call_) y por lo tanto _this_ está vinculado al primer argumento dado a _bind_, el valor _this_ de la función externa (que contiene el objeto de prueba).
 
-(((context parameter)))(((function,higher-order)))Most ((standard))
-higher-order methods on arrays, such as `forEach` and `map`, take an
-optional second argument that can also be used to provide a `this` for
-the calls to the iteration function. So you could express the previous example
-in a slightly simpler way.
+(((context parameter)))(((function,higher-order)))La mayoría de los métodos estándar de orden superior en matrices (_arrays_), como _forEach_ y _map_, toman un segundo argumento opcional que también se puede utilizar para proporcionar un _this_ para las llamadas a la función de iteración. Así que podría expresar el ejemplo anterior de una manera un poco más simple.
 
 [source,javascript]
 ----
@@ -442,16 +318,9 @@ console.log(test.addPropTo([5]));
 // → [15]
 ----
 
-This works only for higher-order functions that
-support such a _context_ parameter. When they don't, you'll need to
-use one of the other approaches.
+Esto sólo funciona para las funciones de orden superior que soportan dicho parámetro de contexto. Cuando no lo hacen, tendrá que utilizar uno de los otros enfoques.
 
-(((context parameter)))(((function,higher-order)))(((call method)))In
-our own higher-order functions, we can support such a context
-parameter by using the `call` method to call the function given as an
-argument. For example, here is a `forEach` method for our `Grid` type,
-which calls a given function for each element in the grid that isn't
-null or undefined:
+(((context parameter)))(((function,higher-order)))(((call method)))En nuestras propias funciones de orden superior, podemos utilizar este parámetro de contexto utilizando el método _call_ para llamar a la función dada como argumento. Por ejemplo, aquí hay un método _forEach_ para nuestro tipo _Grid_, que llama a una función dada para cada elemento de la cuadrícula que no es _null_ o _undefined_:
 
 // include_code
 
@@ -468,22 +337,11 @@ Grid.prototype.forEach = function(f, context) {
 };
 ----
 
-== Animating life ==
+== Animando la vida ==
 
-(((simulation)))(((electronic life)))(((World type)))The next
-step is to write a `turn` method for the world object that gives the
-((critter))s a chance to act. It will go over the grid using the
-`forEach` method we just defined, looking for objects with an `act`
-method. When it finds one, `turn` calls that method to get an action
-object and carries out the action when it is valid. For now, only
-`"move"` actions are understood.
+(((simulation)))(((electronic life)))(((World type)))El siguiente paso es escribir un método de _turn_ para el objeto _word_ que da a los bichos la oportunidad de actuar. Recorrerá la cuadrícula usando el método _forEach_ que acabamos de definir, buscando objetos con un método _act_. Cuando encuentre uno, _turn_ llamadra dicho método _act_ para obtener un objeto y llevar a cabo ese tipo de acción. Por ahora, solo se entienden las acciones tipo "mover".
 
-(((grid)))There is one potential problem with this approach. Can you
-spot it? If we let critters move as we come across them, they may move
-to a square that we haven't looked at yet, and we'll allow them to
-move _again_ when we reach that square. Thus, we have to keep an array
-of critters that have already had their turn and ignore them when we
-see them again.
+(((grid)))Hay un problema potencial con este enfoque. ¿Puedes detectarlo? Si dejamos que los bichos se muevan al cruzarlos, pueden moverse a un cuadrado que todavía no hemos visto, y les permitiremos moverse de nuevo cuando alcancemos ese cuadrado. Por lo tanto, tenemos que mantener una serie de criaturas que ya han tenido su turno e ignorarlos cuando los vemos de nuevo.
 
 // include_code
 
@@ -500,10 +358,7 @@ World.prototype.turn = function() {
 };
 ----
 
-(((this)))We use the second parameter to the grid's `forEach` method
-to be able to access the correct `this` inside the inner function.
-The `letAct` method contains the actual logic that allows the critters
-to move.
+(((this)))Utilizamos el segundo parámetro del método _forEach_ de la cuadrícula para poder acceder al _this_ correcto dentro de la función interna. El método _letAct_ contiene la lógica real que permite a los _critters_ moverse.
 
 // include_code
 
@@ -530,46 +385,19 @@ World.prototype.checkDestination = function(action, vector) {
 };
 ----
 
-(((View type)))(((electronic life)))First, we simply ask the
-critter to act, passing it a view object that knows about the world
-and the critter's current position in that world (we'll define `View`
-in a link:07_elife.html#view[moment]). The `act` method returns an
-action of some kind.
+(((View type)))(((electronic life)))Primero, pedimos simplemente al _critter_ que actúe, pasándola un objeto _view_ con datos sobre el mundo y la posición actual de la criatura (definiremos _view_ en un link:07_elife.html#view[momento]). El método _act_ devuelve una acción de algún tipo.
 
-If the action's `type` is not `"move"`, it is ignored. If it _is_
-`"move"`,  if it has a `direction` property that refers to a valid
-direction, _and_ if the square in that direction is empty (null), we set
-the square where the critter used to be to hold null and store the
-critter in the destination square.
+Si el tipo (_type_) de la acción no es "mover", se ignora. Si es "mover", si tiene una propiedad de dirección que se refiere a una dirección válida, y si el cuadrado en esa dirección es vacío (_null_), fijamos el cuadrado donde el _critter_ estaba como _null_ y almacenamos el critter en el cuadrado de destino.
 
 (((error tolerance)))(((defensive programming)))(((sloppy
-programming)))(((validation)))Note that `letAct` takes care to ignore
-nonsense ((input))—it doesn't assume that the action's `direction`
-property is valid or that the `type` property makes sense. This kind
-of _defensive_ programming makes sense in some situations. The main
-reason for doing it is to validate inputs coming from sources you
-don't control (such as user or file input), but it can also be useful
-to isolate subsystems from each other. In this case, the intention is
-that the critters themselves can be programmed sloppily—they don't
-have to verify if their intended actions make sense. They can just
-request an action, and the world will figure out whether to allow it.
+programming)))(((validation)))Tenga en cuenta que _letAct_ se encarga de ignorar la entrada no valida, no asume que la propiedad _direction_ de la acción es válida o que la propiedad _type_ tiene sentido. Este tipo de (programación defensiva) tiene sentido en algunas situaciones. La principal razón para hacerlo es validar entradas procedentes de fuentes que no controla (como la entrada de usuario o de archivo), pero también puede ser útil para aislar subsistemas entre sí. En este caso, la intención es que los _critters_ puedan ser programados descuidadamente (no tienen que verificar si sus acciones previstas tienen sentido. Pueden solicitar una acción, y el mundo averiguará si permitirla).
 
 (((interface)))(((private property)))(((access
 control)))(((property,naming)))(((underscore character)))(((World
-type)))These two methods are not part of the external interface of a
-`World` object. They are an internal detail. Some languages provide
-ways to explicitly declare certain methods and properties _private_
-and signal an error when you try to use them from outside the object.
-JavaScript does not, so you will have to rely on some other form of
-communication to describe what is part of an object's interface.
-Sometimes it can help to use a naming scheme to distinguish between
-external and internal properties, for example by prefixing all
-internal ones with an underscore character (_). This will make
-accidental uses of properties that are not part of an object's
-interface easier to spot.
+type)))Estos dos métodos no forman parte de la interfaz externa de un objeto _World_. Ellos son un detalle interno. Algunos lenguajes proporcionan formas de declarar explícitamente ciertos métodos y propiedades privadas y señalan un error cuando intenta utilizarlos desde fuera del objeto. JavaScript no, por lo que tendrá que depender de alguna otra forma de comunicación para describir lo que es parte de la interfaz de un objeto. A veces puede ayudar utilizar un esquema de nomenclatura para distinguir entre propiedades externas e internas, por ejemplo prefijando todas las internas con un carácter de subrayado (_). Esto hará que los usos accidentales de las propiedades que no sean parte de la interfaz de un objeto sean más fáciles de detectar.
 
 [[view]]
-(((View type)))The one missing part, the `View` type, looks like this:
+(((View type)))La parte que falta, el tipo _view_, se parece a esto:
 
 // include_code
 
@@ -600,18 +428,11 @@ View.prototype.find = function(ch) {
 };
 ----
 
-(((defensive programming)))The `look` method figures out the
-coordinates that we are trying to look at and, if they are inside the
-((grid)), finds the character corresponding to the element that sits
-there. For coordinates outside the grid, `look` simply pretends that
-there is a wall there so that if you define a world that isn't walled
-in, the critters still won't be tempted to try to walk off the edges.
+(((defensive programming)))El método _look_ calcula las coordenadas que estamos tratando de ver y, si están dentro de la cuadrícula, encuentra el carácter correspondiente al elemento que se encuentra allí. Para las coordenadas fuera de la cuadrícula, _look_ simplemente finge que hay una pared allí de modo que si usted define un mundo sin paredes, las criaturasno serán tentadas de intentar caminar fuera de los bordes.
 
-== It moves ==
+== Se mueve ==
 
-(((electronic life)))(((simulation)))We instantiated a world
-object earlier. Now that we've added all the necessary methods, it
-should be possible to actually make the world move.
+(((electronic life)))(((simulation)))Hemos instanciado un objeto del mundo anterior. Ahora que hemos añadido todos los métodos necesarios, debería ser posible hacer que el mundo se mueva.
 
 [source,javascript]
 ----
@@ -622,10 +443,10 @@ for (var i = 0; i < 5; i++) {
 // → … five turns of moving critters
 ----
 
-ifdef::book_target[]
+          ifdef::book_target[]
 
-The first two maps that are displayed will look something like this
-(depending on the random direction the critters picked):
+          
+Los primeros dos mapas que se muestran será algo similar a esto:
 
 ----
 ############################  ############################
@@ -642,20 +463,14 @@ The first two maps that are displayed will look something like this
 ############################  ############################
 ----
 
-(((animation)))They move! To get a more interactive view of these
-critters crawling around and bouncing off the walls, open this chapter
-in the online version of the book at
-http://eloquentjavascript.net[_eloquentjavascript.net_].
+(((animation))) ¡Ellos mueven! Para obtener una visión más interactiva de estas
+criaturas que se arrastran y rebotan en las paredes, abra este capítulo en la versión on-line del libro http://eloquentjavascript.net[_eloquentjavascript.net_].
 
 endif::book_target[]
 
 ifdef::interactive_target[]
 
-Simply printing out many copies of the map is a rather unpleasant
-way to observe a world, though. That's why the sandbox provides an
-`animateWorld` function that will run a world as an onscreen
-animation, moving three turns per second, until you hit the stop
-button.
+Sin embargo, imprimir muchas copias del mapa es una manera bastante desagradable de observar un mundo. Es por eso que el _sandbox_ proporciona una función _animateWorld_ que ejecutará un mundo como una animación en pantalla, moviéndose tres veces por segundo, hasta que pulse el botón de parada.
 
 // test: no
 
@@ -665,31 +480,17 @@ animateWorld(world);
 // → … life!
 ----
 
-The implementation of `animateWorld` will remain a mystery for now,
-but after you've read the link:13_dom.html#dom[later chapters] of this
-book, which discuss JavaScript integration in web browsers, it won't
-look so magical anymore.
+La implementación de _animateWorld_ seguirá siendo un misterio por ahora, pero después de haber leído los link:13_dom.html#dom[capítulos posteriores] de este libro, y estudiar la integración de JavaScript en los navegadores web, ya no se verá tan mágico.
 
 endif::interactive_target[]
 
-== More life forms ==
+== Más formas de vida ==
 
-The dramatic highlight of our world, if you watch for a bit, is when
-two critters bounce off each other. Can you think of another
-interesting form of ((behavior))?
+El punto culminante dramático de nuestro mundo, si usted mira para un pedacito, es cuando dos _critters_ rebotan el uno al otro. ¿Puedes pensar en otra forma interesante de ((comportamiento))?
 
-(((wall following)))The one I came up with is a ((critter)) that moves
-along walls. Conceptually, the critter keeps its left hand (paw,
-tentacle, whatever) to the wall and follows along. This turns out to
-be not entirely trivial to implement.
+(((wall following)))Podemos hacer un _critter_ que se mueve a lo largo de las paredes (_WallFollower_).  Conceptualmente, el critter mantiene su mano izquierda (pata, tentáculo, lo que sea) a la pared y sigue adelante. Este no es un cambio trivial de implementar:
 
-(((WallFollower type)))(((directions object)))We need to be
-able to “compute” with ((compass direction))s. Since directions are
-modeled by a set of strings, we need to define our own operation
-(`dirPlus`) to calculate relative directions. So `dirPlus("n", 1)`
-means one 45-degree turn clockwise from north, giving `"ne"`.
-Similarly, `dirPlus("s", -2)` means 90 degrees counterclockwise from
-south, which is east.
+(((WallFollower type)))(((directions object))) Tenemos que ser capaces de “hacer calculos" con las ((direcciones de la brújula)). Como las direcciones son modeladas por un conjunto de cadenas, deberíamos definir nuestra propia operación (_dirPlus_) para calcular direcciones relativas. Así dirPlus ("_n_", _1_) significa una vuelta de 45 grados en sentido horario desde el norte, dando "_ne_". Del mismo modo, dirPlus ("_s_", _-2_) significa 90 grados en sentido antihorario desde el sur, que es el este.
 
 // include_code
 
@@ -716,31 +517,17 @@ WallFollower.prototype.act = function(view) {
 };
 ----
 
-(((artificial intelligence)))(((pathfinding)))(((View type)))The `act`
-method only has to “scan” the critter's surroundings, starting from
-its left side and going clockwise until it finds an empty square.
-It then moves in the direction of that empty square.
+(((artificial intelligence)))(((pathfinding)))(((View type)))El método _act_ sólo tiene que "escanear" el entorno del _critter_, comenzando por su lado izquierdo y en sentido horario hasta encontrar un cuadrado vacío. Entonces se mueve en la dirección de ese cuadrado vacío.
 
-What complicates things is that a critter may end up in the middle of
-empty space, either as its start position or as a result of walking
-around another critter. If we apply the approach I just described in
-empty space, the poor critter will just keep on turning left at every
-step, running in circles.
+Lo que complica las cosas es que un _critter_ puede terminar en el medio del espacio vacío, ya sea como su posición inicial o como resultado de caminar alrededor de otro _critter_. Si aplicamos el enfoque que acabo de describir en el espacio vacío, el pobre _critter_ seguirá girando a la izquierda en cada paso, corriendo en círculos.
 
-So there is an extra check (the `if` statement) to start scanning to
-the left only if it looks like the critter has just passed some kind
-of ((obstacle))—that is, if the space behind and to the left of the
-critter is not empty. Otherwise, the critter starts scanning directly
-ahead, so that it'll walk straight when in empty space.
+De modo que hay una comprobación extra (la sentencia _if_) para iniciar el escaneado hacia la izquierda sólo si parece que el _critter_ acaba de pasar algún tipo de obstáculo, es decir, si el espacio detrás y hacia la izquierda del _critter_ no está vacío. De lo contrario, el _critter_ comienza a escanear directamente delante, de modo que va a caminar recto en el espacio vacío.
 
-(((infinite loop)))And finally, there's a test comparing `this.dir` to
-`start` after every pass through the loop to make sure that the loop
-won't run forever when the critter is walled in or crowded in by other
-critters and can't find an empty square.
+(((infinite loop)))Y finalmente, hay una prueba que compara _this.dir_ con _start_ después de cada paso a través del _loop_ para cerciorarse de que el _loop_ no funcionará para siempre cuando el _critter_ está amurallado adentro o apretado adentro por otros _critters_ y no puede encontrar un cuadrado vacío.
 
 ifdef::interactive_target[]
 
-This small world demonstrates the wall-following creatures:
+Este pequeño mundo muestra las criaturas que siguen la pared:
 
 // test: no
 
@@ -762,35 +549,17 @@ animateWorld(new World(
 
 endif::interactive_target[]
 
-== A more lifelike simulation ==
+== Una simulación más realista ==
 
-(((simulation)))(((electronic life)))To make life in our world
-more interesting, we will add the concepts of ((food)) and
-((reproduction)). Each living thing in the world gets a new property,
-`energy`, which is reduced by performing actions and increased by
-eating things. When the critter has enough ((energy)), it can
-reproduce, generating a new critter of the same kind. To keep things
-simple, the critters in our world reproduce asexually, all by
-themselves.
+(((simulation)))(((electronic life)))Para hacer la vida en nuestro mundo más interesante, vamos a añadir los conceptos de la comida y la reproducción. Cada ser vivo en el mundo recibe una nueva propiedad, la energía, que se reduce mediante la realización de acciones y el aumento de comer cosas. Cuando la criatura tiene suficiente energía, puede reproducirse, generando una nueva criatura del mismo tipo. Para mantener las cosas simples, las criaturas en nuestro mundo se reproducen asexualmente por sí solas.
 
-(((energy)))(((entropy)))If critters only move around and eat one
-another, the world will soon succumb to the law of increasing entropy,
-run out of energy, and become a lifeless wasteland. To prevent this
-from happening (too quickly, at least), we add ((plant))s to the
-world. Plants do not move. They just use ((photosynthesis)) to grow
-(that is, increase their energy) and reproduce.
+Si los bichos sólo se mueven y comen unos a otros, el mundo pronto sucumbirá a la ley de entropía creciente, se quedará sin energía, y se convertirá en un desierto sin vida. Para evitar que esto suceda (demasiado rápido, al menos), añadimos plantas al mundo. Las plantas no se mueven. Simplemente utilizan la fotosíntesis para crecer (es decir, aumentar su energía) y reproducirse.
 
-(((World type)))To make this work, we'll need a world with a different
-`letAct` method. We could just replace the method of the `World`
-prototype, but I've become very attached to our simulation with the
-wall-following critters and would hate to break that old world.
+(((World type)))Para que esto funcione, necesitaremos un mundo con un método _letAct_ diferente. Podríamos simplemente reemplazar el método del (prototipo _world_), pero me he vuelto muy apegado a nuestra simulación con las criaturas que siguen a la pared y odiaría romper ese viejo mundo.
 
-(((actionTypes object)))(((LifeLikeWorld type)))One solution is to use
-((inheritance)). We create a new ((constructor)), `LifelikeWorld`,
-whose prototype is based on the `World` prototype but which overrides
-the `letAct` method. The new `letAct` method delegates the work of
-actually performing an action to various functions stored in the
-`actionTypes` object.
+
+(((actionTypes object)))(((LifeLikeWorld type)))Una solución es usar la (herencia). Creamos un nuevo (constructor), _LifelikeWorld_, cuyo prototipo se basa en el (prototipo World) pero que anula el método _letAct_. El nuevo método _letAct_ delega el trabajo de realizar una acción a varias funciones almacenadas en el objeto _actionTypes_.
+
 
 // include_code
 
@@ -815,26 +584,15 @@ LifelikeWorld.prototype.letAct = function(critter, vector) {
       this.grid.set(vector, null);
   }
 };
-----
+    ----
+(((electronic life)))(((function,as value)))(((call method)))(((this)))El nuevo método _letAct_ comprueba primero si se ha devuelto una acción, si existe una (función de controlador) para este tipo de acción y, por último, si ese controlador devuelve _true_, lo que indica que se ha tratado correctamente la acción. 
 
-(((electronic life)))(((function,as value)))(((call
-method)))(((this)))The new `letAct` method first checks whether an
-action was returned at all, then whether a handler function for this
-type of action exists, and finally whether that handler returned
-true, indicating that it successfully handled the action. Note the use
-of `call` to give the handler access to the world, through its `this`
-binding.
+Tenga en cuenta el uso de _call_ para dar al manejador acceso al mundo a través de _this_.
+Si la acción no funcionó por alguna razón, la acción predeterminada es que la criatura simplemente espere. Pierde un quinto punto de energía, y si su nivel de energía es igual o menor que cero, la criatura muere y se borra de la cuadrícula.
 
-If the action didn't work for whatever reason, the default action is
-for the creature to simply wait. It loses one-fifth point of ((energy)),
-and if its energy level drops to zero or below, the creature dies and
-is removed from the grid.
+== Manejadores de acciones ==
 
-== Action handlers ==
-
-(((photosynthesis)))The simplest action a creature can perform is
-`"grow"`, used by ((plant))s. When an action object like `{type:
-"grow"}` is returned, the following handler method will be called:
+(((photosynthesis)))La acción más simple que una criatura puede realizar es "crecer" (_grow_), usada por las plantas. Cuando se devuelve un objeto de acción como _{type: "grow"}_, se llamará al siguiente método del controlador:
 
 // include_code
 
@@ -846,10 +604,8 @@ actionTypes.grow = function(critter) {
 };
 ----
 
-Growing always succeeds and adds half a point to the plant's
-((energy)) level.
-
-Moving is more involved.
+Crecer siempre tiene éxito y añade medio punto al nivel de energía (_energy_) de la planta.
+Moverse es más complicado.
 
 // include_code
 
@@ -868,14 +624,9 @@ actionTypes.move = function(critter, vector, action) {
 };
 ----
 
-(((validation)))This action first checks, using the `checkDestination`
-method defined link:07_elife.html#checkDestination[earlier], whether
-the action provides a valid destination. If not, or if the
-destination isn't empty, or if the critter lacks the required
-((energy)), `move` returns false to indicate no action was taken.
-Otherwise, it moves the critter and subtracts the energy cost.
+(((validation)))Esta acción comprueba primero, utilizando el método _checkDestination_ definido anteriormente, si la acción proporciona un destino válido. Si no, o si el destino no está vacío, o si el _critter_ carece de la energía requerida, _move_ devuelve false para indicar que no se tomó ninguna acción. De lo contrario, se mueve el _critter_ y resta el costo de la energía.
 
-(((food)))In addition to moving, critters can eat.
+(((food)))Además de moverse, las criaturas pueden comer.
 
 // include_code
 
@@ -892,13 +643,9 @@ actionTypes.eat = function(critter, vector, action) {
 };
 ----
 
-(((validation)))Eating another ((critter)) also involves providing a
-valid destination square. This time, the destination must not be
-empty and must contain something with ((energy)), like a critter (but
-not a wall—walls are not edible). If so, the energy from the eaten is
-transferred to the eater, and the victim is removed from the grid.
+(((validation)))Comer otra criatura (_critter_) también implica proporcionar un cuadrado de destino válido. Esta vez, el destino no debe estar vacío y debe contener algo con energía, como un _critter_ (pero no una pared - las paredes no son comestibles). Si es así, la energía de la comida es transferida al comedor, y la víctima es removida de la cuadrícula.
 
-(((reproduction)))And finally, we allow our critters to reproduce.
+(((reproduction)))Y finalmente, permitimos que nuestras criaturas se reproduzcan.
 
 // include_code
 
@@ -918,23 +665,13 @@ actionTypes.reproduce = function(critter, vector, action) {
 };
 ----
 
-(((electronic life)))Reproducing costs twice the ((energy))
-level of the newborn critter. So we first create a (hypothetical) baby
-using `elementFromChar` on the critter's own origin character. Once we
-have a baby, we can find its energy level and test whether the parent
-has enough energy to successfully bring it into the world. We also
-require a valid (and empty) destination.
+(((electronic life)))Reproducirse cuesta dos veces el nivel de energía de un _critter_ recién nacido. Así que primero creamos un bebé (hipotético) usando _elementFromChar_ en el propio carácter de origen del _critter_. Una vez que tenemos un bebé, podemos encontrar su nivel de energía y probar si el padre tiene suficiente energía para llevarlo con éxito al mundo. También necesitamos un destino válido (y vacío).
 
-(((reproduction)))If everything is okay, the baby is put onto the grid
-(it is now no longer hypothetical), and the energy is spent.
+(((reproduction)))Si todo está bien, el bebé es puesto en la cuadrícula (ya no es hipotético), y la energía se gasta.
 
-== Populating the new world ==
+== Llenar el nuevo mundo ==
 
-(((Plant type)))(((electronic life)))We now have a
-((framework)) to simulate these more lifelike creatures. We could put
-the critters from the old world into it, but they would just die
-since they don't have an ((energy)) property. So let's make new ones.
-First we'll write a ((plant)), which is a rather simple life-form.
+(((Plant type)))(((electronic life)))Ahora tenemos un marco (_framework_) para simular estas criaturas en forma más realista. Podríamos poner las criaturas del viejo mundo en ella, pero sólo morirían ya que no tienen una propiedad de energía. Así que hagamos nuevos. Primero escribiremos una planta (_Plant_), que es una forma de vida bastante simple.
 
 // include_code
 
@@ -955,14 +692,9 @@ Plant.prototype.act = function(view) {
 ----
 
 (((reproduction)))(((photosynthesis)))(((random
-number)))(((Math.random function)))Plants start with an energy level
-between 3 and 7, randomized so that they don't all reproduce in the
-same turn. When a plant reaches 15 energy points and there is empty
-space nearby, it reproduces into that empty space. If a plant can't
-reproduce, it simply grows until it reaches energy level 20.
+number)))(((Math.random function)))Las plantas comienzan con un nivel de energía entre 3 y 7, aleatorizado para que no se reproduzcan todos en el mismo turno (_turn_). Cuando una planta alcanza 15 puntos de energía y hay un espacio vacío cerca, se reproduce en ese espacio vacío. Si una planta no puede reproducirse, simplemente crece hasta alcanzar el nivel de energía 20.
 
-(((critter)))(((PlantEater type)))(((herbivore)))(((food chain)))We
-now define a plant eater.
+(((critter)))(((PlantEater type)))(((herbivore)))(((food chain)))Ahora definimos un comedor de plantas (_PlantEater_).
 
 // include_code
 
@@ -983,15 +715,11 @@ PlantEater.prototype.act = function(view) {
 };
 ----
 
-We'll use the `*` character for ((plant))s, so that's what this
-creature will look for when it searches for ((food)).
+Usaremos el carácter _*_ para las plantas (_Plant_), así que eso es lo que esta criatura buscará cuando busque comida.
 
-== Bringing it to life ==
+== Darle vida ==
 
-(((electronic life)))And that gives us enough elements to try
-our new world. Imagine the following map as a grassy valley with a herd of
-((herbivore))s in it, some boulders, and lush ((plant)) life
-everywhere.
+(((electronic life)))Y eso nos da suficientes elementos para probar nuestro nuevo mundo. Imagínese el siguiente mapa como un valle cubierto de hierba con una manada de herbívoros en ella, algunas rocas y una exuberante vegetación en todas partes.
 
 // include_code
 
@@ -1016,7 +744,7 @@ var valley = new LifelikeWorld(
 );
 ----
 
-(((animation)))(((simulation)))Let's see what happens if we run this.
+(((animation)))(((simulation)))Veamos ver ocurre cuando ejecutamos este codigo.
 (!book These snapshots illustrate a typical run of this world.!)
 
 ifdef::interactive_target[]
@@ -1076,39 +804,18 @@ ifdef::book_target[]
 
 endif::book_target[]
 
-(((stability)))(((reproduction)))(((extinction)))(((starvation)))Most
-of the time, the plants multiply and expand quite quickly, but then
-the abundance of ((food)) causes a population explosion of the
-((herbivore))s, who proceed to wipe out all or nearly all of the
-((plant))s, resulting in a mass starvation of the critters. Sometimes,
-the ((ecosystem)) recovers and another cycle starts. At other times,
-one of the species dies out completely. If it's the herbivores, the
-whole space will fill with plants. If it's the plants, the remaining
-critters starve, and the valley becomes a desolate wasteland. Ah, the
-cruelty of nature.
+(((stability)))(((reproduction)))(((extinction)))(((starvation)))La mayoría de las veces, las plantas se multiplican y se expanden con bastante rapidez, pero luego la abundancia de alimentos causa una explosión poblacional de los herbívoros, que proceden a eliminar todas o casi todas las plantas, resultando en un hambre masiva de las criaturas. A veces, el ecosistema se recupera y comienza otro ciclo. En otras ocasiones, una de las especies muere completamente. Si son los herbívoros, todo el espacio se llenará de plantas. Si son las plantas, las criaturas restantes mueren de hambre, y el valle se convierte en una tierra baldía desolada. Ah, la crueldad de la naturaleza.
 
-== Exercises ==
+== Ejercicios ==
 
-=== Artificial stupidity ===
+=== Estupidez artificial ===
 
 (((artificial stupidity (exercise))))(((artificial
-intelligence)))(((extinction)))Having the inhabitants of our world go
-extinct after a few minutes is kind of depressing. To deal with this,
-we could try to create a smarter plant eater.
+intelligence)))(((extinction)))Tener extinguidos a los habitantes de nuestro mundo después de unos minutos es algo deprimente. Para hacer frente a esto, podríamos tratar de crear un comedor de plantas más inteligente (_smarter plant eater_).
 
-(((pathfinding)))(((reproduction)))(((food)))There are several obvious
-problems with our herbivores. First, they are terribly greedy,
-stuffing themselves with every plant they see until they have wiped
-out the local plant life. Second, their randomized movement (recall
-that the `view.find` method returns a random direction when multiple
-directions match) causes them to stumble around ineffectively and
-starve if there don't happen to be any plants nearby. And finally,
-they breed very fast, which makes the cycles between abundance and
-famine quite intense.
+(((pathfinding)))(((reproduction)))(((food)))Hay varios problemas obvios con nuestros herbívoros. En primer lugar, son terriblemente codiciosos, tragan cada planta que ven hasta que han borrado toda la vida vegetal. En segundo lugar, su movimiento al azar (recuerde que el método _view.find:_ devuelve una dirección al azar cuando coinciden varias direcciones) hace que tropiecen ineficazmente y mueren de hambre si no encuentran ninguna planta cerca. Y finalmente, se reproducen muy rápido, lo que hace que los ciclos entre la abundancia y el hambre sean bastante intensos.
 
-Write a new critter type that tries to address one or more of these
-points and substitute it for the old `PlantEater` type in the valley
-world. See how it fares. Tweak it some more if necessary.
+Crea un nuevo tipo de _critter_ intentando abordar uno o más de estos puntos y sustituyelo por el antiguo tipo _PlantEater_ en el mundo del valle. Haga algunos ajustes mas si lo ve necesario.
 
 ifdef::interactive_target[]
 
@@ -1140,47 +847,24 @@ animateWorld(new LifelikeWorld(
 
 endif::interactive_target[]
 
-!!hint!!
+!!pista!!
 
 (((artificial stupidity (exercise))))(((artificial
-intelligence)))(((behavior)))(((state)))The greediness problem can be
-attacked in several ways. The critters could stop eating when they
-reach a certain ((energy)) level. Or they could eat only every N turns (by
-keeping a counter of the turns since their last meal in a property on
-the creature object). Or, to make sure plants never go entirely
-extinct, the animals could refuse to eat a ((plant)) unless they see
-at least one other plant nearby (using the `findAll` method on the
-view). A combination of these, or some entirely different strategy,
-might also work.
+intelligence)))(((behavior)))(((state)))El problema de la codicia puede ser atacado de varias maneras. Las criaturas podrían dejar de comer cuando alcanzan un cierto nivel de energía. O pueden comer sólo cada N vueltas (manteniendo un contador de las vueltas desde su última comida en una propiedad en el objeto de criatura). O, para asegurarse de que las plantas nunca se extingan por completo, los animales podrían negarse a comer una planta a menos que vean por lo menos una planta cercana (usando el método findAll en la vista). Una combinación de estos, o alguna estrategia totalmente diferente, también podría funcionar
 
-(((pathfinding)))(((wall following)))Making the critters move more
-effectively could be done by stealing one of the movement strategies
-from the critters in our old, energyless world. Both the bouncing
-behavior and the wall-following behavior showed a much wider range of
-movement than completely random staggering.
+El problema de la codicia puede ser atacado de varias maneras. Las criaturas podrían dejar de comer cuando alcanzan un cierto nivel de energía (_energy_). O pueden comer sólo cada _N_ vueltas (manteniendo un contador de las vueltas desde su última comida en una propiedad en el objeto _critters_). O, para asegurarse de que las plantas nunca se extingan por completo, los animales podrían negarse a comer una planta a menos que vean por lo menos una planta cercana (usando el método _findAll_ en la vista). Una combinación de estos, o alguna estrategia totalmente diferente, también podría funcionar.
 
-(((reproduction)))(((stability)))Making creatures breed more slowly is
-trivial. Just increase the minimum energy level at which they
-reproduce. Of course, making the ecosystem more stable also makes it
-more boring. If you have a handful of fat, immobile critters forever
-munching on a sea of plants and never reproducing, that makes for a
-very stable ecosystem. But no one wants to watch that.
+(((pathfinding)))(((wall following)))Hacer que los bichos se muevan más eficazmente se podría hacer copiando una de las estrategias de movimiento de las criaturas en nuestro viejo mundo sin energías. Tanto el comportamiento de rebote (_bouncing_) como el comportamiento de seguimiento de la pared (_wall-following_) mostraron un rango de movimiento mucho más amplio que el escalonamiento completamente aleatorio.
 
-!!hint!!
+(((reproduction)))(((stability)))Hacer que las criaturas se reproduzcan más lentamente es trivial. Sólo aumentar el nivel mínimo de energía en la que se reproducen. Por supuesto, hacer el ecosistema más estable también lo hace más aburrido. Si tienes un puñado de criaturas gordas e inmóviles reproducirse pero siempre comiendo en un mar de plantas, tienes un ecosistema muy estable, pero muy aburrido.
 
-=== Predators ===
+!!pista!!
 
-(((predators (exercise))))(((carnivore)))(((food chain)))Any serious
-((ecosystem)) has a food chain longer than a single link. Write
-another ((critter)) that survives by eating the ((herbivore)) critter.
-You'll notice that ((stability)) is even harder to achieve now that there
-are cycles at multiple levels. Try to find a strategy to make the
-ecosystem run smoothly for at least a little while.
+=== Depredadores ===
 
-(((Tiger type)))One thing that will help is to make the world bigger.
-This way, local population booms or busts are less likely to wipe out
-a species entirely, and there is space for the relatively large prey
-population needed to sustain a small predator population.
+(((predators (exercise))))(((carnivore)))(((food chain)))Cualquier ecosistema serio tiene una cadena alimentaria más larga que un solo eslabón. Escriba otro _critter_ que sobreviva comiendose al _critter_  herbívoro. Usted notará que la estabilidad es aún más difícil de lograr ahora que hay ciclos en múltiples niveles. Trate de encontrar una estrategia para hacer que el ecosistema funcione sin problemas durante al menos un tiempo.
+
+(((Tiger type)))Una cosa que ayudará es hacer el mundo más grande. De esta manera, los auges o bajas de la población local son menos propensos a eliminar completamente una especie, y hay espacio para la población de presas relativamente grande que se necesita para mantener una pequeña población de depredadores. 
 
 ifdef::interactive_target[]
 
@@ -1219,22 +903,10 @@ animateWorld(new LifelikeWorld(
 
 endif::interactive_target[]
 
-!!hint!!
+!!pista!!
 
-(((predators (exercise))))(((reproduction)))(((starvation)))Many of
-the same tricks that worked for the previous exercise also apply here.
-Making the predators big (lots of energy) and having them reproduce
-slowly is recommended. That'll make them less vulnerable to periods of
-starvation when the herbivores are scarce.
+(((predators (exercise))))(((reproduction)))(((starvation)))Muchos de los mismos trucos que trabajaron para el ejercicio anterior también se aplican aquí. Se recomienda hacer que los depredadores sean grandes (mucha energía) y que se reproduzcan lentamente. Eso los hará menos vulnerables a los períodos de hambre cuando los herbívoros son escasos.
 
-Beyond staying alive, keeping its ((food)) stock alive is a
-predator's main objective. Find some way to make predators hunt
-more aggressively when there are a lot of ((herbivore))s and hunt more
-slowly (or not at all) when prey is rare. Since plant eaters move
-around, the simple trick of eating one only when others are nearby is
-unlikely to work—that'll happen so rarely that your predator will
-starve. But you could keep track of observations in previous turns, in
-some ((data structure)) kept on the predator objects, and have it base
-its ((behavior)) on what it has seen recently.
+Más allá de mantenerse vivo, mantener vivo su alimento es el principal objetivo de un depredador. Encuentre alguna manera de hacer que los depredadores cazan de manera más agresiva cuando hay muchos herbívoros y cazan más lentamente (o no) cuando la presa es rara. Dado que los comedores de plantas se mueven, el simple truco de comer uno solo cuando otros están cerca no es probable que funcione, eso sucederá tan rara vez que su depredador se muera de hambre. Pero usted podría seguir la pista de observaciones en vueltas anteriores, en una cierta estructura de datos guardada en los objetos del depredador, y tenerla basar su comportamiento (_behavior_) en lo que ha visto recientemente.
 
-!!hint!!
+!!pista!!
