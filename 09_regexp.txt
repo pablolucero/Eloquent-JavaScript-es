@@ -2,14 +2,12 @@
 :prev_link: 08_error
 :next_link: 10_modules
 
-= Regular Expressions =
+= Expresiones Regulares =
 
 [chapterquote="true"]
 [quote,Jamie Zawinski]
 ____
-Some people, when confronted with a
-problem, think ‘I know, I'll use regular expressions.’ Now they have
-two problems.
+Algunas personas, cuando se enfrentan a un problema, dicen 'ya sé, usaré expresiones regulares'. entonces tienen dos problemas.
 ____
 
 ifdef::interactive_target[]
@@ -17,40 +15,21 @@ ifdef::interactive_target[]
 [chapterquote="true"]
 [quote, Master Yuan-Ma, The Book of Programming]
 ____
-Yuan-Ma said, ‘When you cut against the grain of the wood, much
-strength is needed. When you program against the grain of a problem,
-much code is needed.’
+Yuan-Ma dijo: "Cuando se corta contra la veta de la madera, se necesita mucha fuerza. Cuando se programa contra la lógica de un problema, se necesita mucho código."
 ____
 
 endif::interactive_target[]
 
 (((Zawinski+++,+++
-Jamie)))(((evolution)))(((adoption)))(((integration)))Programming
-((tool))s and techniques survive and spread in a chaotic, evolutionary
-way. It's not always the pretty or brilliant ones that win but rather
-the ones that function well enough within the right niche—for example,
-by being integrated with another successful piece of technology.
+Jamie)))(((evolution)))(((adoption)))(((integration)))Las herramientas y técnicas de programación sobreviven y se propagan de una manera caótica y evolutiva. No siempre son las formas mas bonitas y luminosos las que ganan, sino las que funcionan lo suficientemente bien en el nicho adecuado. Por ejemplo, aquellas que estan correctamente integrada con otra pieza tecnologica.
 
-(((domain-specific language)))In this chapter, I will discuss one such
-tool, _((regular expression))s_. Regular expressions are a way to
-describe ((pattern))s in string data. They form a small, separate
-language that is part of JavaScript and many other languages and
-tools.
+(((domain-specific language)))En este capítulo, hablaré de una de esas herramientas, las expresiones regulares. Las expresiones regulares son una forma de describir patrones en los datos tipo cadena. Forman un lenguaje pequeño y separado que forma parte de JavaScript y muchos otros idiomas y herramientas.
 
-(((interface,design)))Regular expressions are both terribly awkward
-and extremely useful. Their syntax is cryptic, and the programming
-((interface)) JavaScript provides for them is clumsy. But they are a
-powerful ((tool)) for inspecting and processing strings. Properly
-understanding regular expressions will make you a more effective
-programmer.
+(((interface,design)))Las expresiones regulares son terriblemente incómodas y extremadamente útiles. Su sintaxis es críptica, y la interfaz de programación que proporciona JavaScript es torpe. Pero son una poderosa herramienta para inspeccionar y procesar cadenas. La correcta comprensión de expresiones regulares le hará un programador más eficaz.
 
-== Creating a regular expression ==
+== Creación de una expresión regular ==
 
-(((regular expression,creation)))(((RegExp constructor)))(((literal
-expression)))(((slash character)))A regular expression is a type of
-object. It can either be constructed with the `RegExp` constructor or
-written as a literal value by enclosing the pattern in forward slash
-(`/`) characters.
+(((regular expression,creation)))(((RegExp constructor)))(((literal expression)))(((slash character)))Una expresión regular es un tipo de objeto. Puede construirse con el constructor `_RegExp_` o escribirse como un valor literal encerrando el patrón en caracteres de barra diagonal (`_/_`).
 
 [source,javascript]
 ----
@@ -58,43 +37,23 @@ var re1 = new RegExp("abc");
 var re2 = /abc/;
 ----
 
-Both of these regular expression objects represent the same
-((pattern)): an _a_ character followed by a _b_ followed by a _c_.
+Ambos objetos de expresión regular representan el mismo patrón ((pattern)): un carácter _a_ seguido de un _b_ seguido de un _c_.
 
-(((backslash character)))(((RegExp constructor)))When using the
-`RegExp` constructor, the pattern is written as a normal string, so
-the usual rules apply for backslashes.
+(((backslash character)))(((RegExp constructor)))Cuando se utiliza el constructor `_RegExp_`, el patrón se escribe como una cadena normal, por lo que se aplican las reglas habituales para las barras invertidas.
 
 (((regular expression,escaping)))(((escaping,in regexps)))(((slash
-character)))The second notation, where the pattern appears between
-slash characters, treats backslashes somewhat differently. First,
-since a forward slash ends the pattern, we need to put a backslash
-before any forward slash that we want to be _part_ of the pattern. In
-addition, backslashes that aren't part of special character codes
-(like `\n`) will be _preserved_, rather than ignored as they are in
-strings, and change the meaning of the pattern. Some characters, such
-as question marks and plus signs, have special meanings in regular
-expressions and must be preceded by a backslash if they are meant to
-represent the character itself.
+character)))La segunda notación, donde el patrón aparece entre los caracteres de barra (`_/_`), trata las barras inversas de manera algo diferente. En primer lugar, ya que una barra inclinada termina el patrón, necesitamos poner una barra invertida antes de cualquier barra inclinada que queramos ser parte del patrón. Además, las barras invertidas que no forman parte de códigos de caracteres especiales (como `_\n_`) se conservarán, en lugar de ignorarse como están en cadenas, y cambiaran el significado del patrón. Algunos caracteres, como signos de interrogación (`_?_`) y signos más (`_+_`), tienen significados especiales en expresiones regulares y deben estar precedidos por una barra invertida si están destinados a representar el carácter en sí.
 
 [source,javascript]
 ----
 var eighteenPlus = /eighteen\+/;
 ----
 
-Knowing precisely what characters to backslash-escape when writing
-regular expressions requires you to know every character with a
-special meaning. For the time being, this may not be realistic, so
-when in doubt, just put a backslash before any character that is not a
-letter, number, or ((whitespace)).
+Saber cuales carácteres deben usar la barra invertida y cuales no al momento que se escriben expresiones regulares requiere que usted conozca a cada uno de los carácteres especiales. Como en un principio esto puede ser muy engorroso, es recomendable que en caso de duda, sólo ponga una barra invertida antes de cualquier carácter que no sea una letra, número o espacio en blanco.
 
-== Testing for matches ==
+== Testeando las coincidencias (matches) ==
 
-(((matching)))(((test method)))(((regular expression,methods)))Regular
-expression objects have a number of methods. The simplest one is
-`test`. If you pass it a string, it will return a ((Boolean)) telling
-you whether the string contains a match of the pattern in the
-expression.
+(((matching)))(((test method)))(((regular expression,methods))) Los objetos de expresiones regulares tienen varios métodos. El más simple es `_test_`. Si le pasas una cadena, devolverá un booleano diciéndote si la cadena contiene una coincidencia con el patrón de la expresión propuesta.
 
 [source,javascript]
 ----
@@ -104,23 +63,15 @@ console.log(/abc/.test("abxde"));
 // → false
 ----
 
-(((pattern)))A ((regular expression)) consisting of only nonspecial
-characters simply represents that sequence of characters. If _abc_
-occurs anywhere in the string we are testing against (not just at the
-start), `test` will return `true`.
+(((pattern)))Una expresión regular que consta sólo de caracteres no especiales representa simplemente esa secuencia de caracteres. Si “abc” se produce en cualquier parte de la cadena que estamos probando (no sólo al principio), el metodo `_test_` devolverá `_true_`.
 
-== Matching a set of characters ==
+== Matchear un conjunto de caracteres ==
 
-(((regular expression)))(((indexOf method)))Finding out whether a
-string contains _abc_ could just as well be done with a call to
-`indexOf`. Regular expressions allow us to go beyond that and express
-more complicated ((pattern))s.
+(((regular expression)))(((indexOf method))) Descubrir si una cadena contiene _abc_ podría hacerse con una llamada al método `_indexOf_`. Las expresiones regulares nos permiten ir más allá y expresar patrones más complicados.
 
-Say we want to match any ((number)). In a regular expression, putting
-a ((set)) of characters between square brackets makes that part of the
-expression match any of the characters between the brackets.
+Digamos que queremos buscar en una cadena cualquier número del 0 al 9. En una expresión regular, poner un conjunto de caracteres entre corchetes (`_[]_`) hace en la expresión de destino busque coincidencias con cualquiera de los caracteres entre los corchetes.
 
-Both of the following expressions match all strings that contain a ((digit)):
+Las dos expresiones siguientes coinciden con todas las cadenas que contienen un dígito:
 
 [source,javascript]
 ----
@@ -130,31 +81,22 @@ console.log(/[0-9]/.test("in 1992"));
 // → true
 ----
 
-(((dash character)))Within square brackets, a dash (`-`) between two
-characters can be used to indicate a ((range)) of characters, where
-the ordering is determined by the character's ((Unicode)) number.
-Characters 0 to 9 sit right next to each other in this ordering
-(codes 48 to 57), so `[0-9]` covers all of them and matches any
-((digit)).
+(((dash character))) Entre corchetes, se puede utilizar un guión (`_-_`) entre dos caracteres para indicar un rango, donde el orden se determina por el número ((Unicode)) de cada cáracter. Como los caracteres `_0_` a `_9_` se sitúan uno al lado del otro en este orden (códigos 48 a 57), entonces `_[0-9]_` cubre todos ellos y coincide con cualquier dígito.
 
-(((whitespace)))(((alphanumeric character)))(((period
-character)))There are a number of common character groups that have
-their own built-in shortcuts. Digits are one of them: `\d` means the
-same thing as `[0-9]`.
+(((whitespace)))(((alphanumeric character)))(((period character)))Hay una serie de grupos de caracteres comunes que tienen sus propios atajos incorporados. Los dígitos son uno de ellos: `_\d_` significa lo mismo que `_[0-9]_`.
 
 [cols="1,5"]
 |====
-|`\d`      |Any ((digit)) character
-|`\w`      |An alphanumeric character (“((word character))”)
-|`\s`      |Any ((whitespace)) character (space, tab, newline, and similar)
-|`\D`      |A character that is _not_ a digit
-|`\W`      |A nonalphanumeric character
-|`\S`      |A nonwhitespace character
-|`.`       |Any character except for newline(((newline character)))
+|`\d`      |Cualquier carácter de dígito
+|`\w`      |Un carácter alfanumérico (carácter de texto o (“((_word character_))”)
+|`\s`      |Cualquier espacio en blanco (espacio, pestaña, nueva línea y similar)
+|`\D`      |Carácter que _no_ es un dígito
+|`\W`      |Un carácter no alfanumérico
+|`\S`      |Un carácter no-espacio-en-blanco
+|`.`       |Cualquier carácter excepto carácter de nueva línea (((newline)))
 |====
 
-So you could match a ((date)) and ((time)) format like 30-01-2003
-15:20 with the following expression:
+Así que se podría coincidir (_matchear_) con un formato de fecha y hora como 30-01-2003 15:20 con la siguiente expresión:
 
 [source,javascript]
 ----
@@ -165,23 +107,11 @@ console.log(dateTime.test("30-jan-2003 15:20"));
 // → false
 ----
 
-(((backslash character)))That looks completely awful, doesn't it? It has way too
-many backslashes, producing background noise that makes it hard to
-spot the actual ((pattern)) expressed. We'll see a slightly improved
-version of this expression
-link:09_regexp.html#date_regexp_counted[later].
+(((backslash character)))Se ve horrible, ¿verdad? Tiene demasiadas barras invertidas y es difícil detectar el patrón real expresado. Veremos una versión ligeramente mejorada de esta expresión más adelante link:09_regexp.html#date_regexp_counted[más adelante].
 
-(((escaping,in regexps)))(((regular expression)))(((set)))These
-backslash codes can also be used inside ((square brackets)). For
-example, `[\d.]` means any digit or a period character. But note that
-the period itself, when used between square brackets, loses its
-special meaning. The same goes for other special characters, such as
-`+`.
+(((escaping,in regexps)))(((regular expression)))(((set)))Estos códigos de barra invertida también se pueden utilizar dentro de corchetes. Por ejemplo, `_[\ d.]_` significa cualquier dígito o un carácter de período. Pero tenga en cuenta que el propio período, cuando se usa entre corchetes, pierde su significado especial. Lo mismo ocurre con otros caracteres especiales, como `_+_`.
 
-(((square brackets)))(((inversion)))(((caret character)))To _invert_ a
-set of characters—that is, to express that you want to match any
-character _except_ the ones in the set—you can write a caret (`^`)
-character after the opening bracket.
+(((square brackets)))(((inversion)))(((caret character)))Para _invertir_ un conjunto de caracteres, es decir, para expresar que desea que coincida con cualquier carácter _excepto_ los del conjunto, puede escribir (`^`) después del corchete de apertura.
 
 [source,javascript]
 ----
@@ -192,16 +122,11 @@ console.log(notBinary.test("1100100010200110"));
 // → true
 ----
 
-== Repeating parts of a pattern ==
+== Repitiendo partes de un patrón ==
 
-(((regular expression,repetition)))We now know how to match a single digit. What
-if we want to match a whole number—a ((sequence)) of one or more
-((digit))s?
+(((regular expression,repetition)))Ya sabemos cómo hacer coincidir un solo dígito. ¿Qué pasa si queremos igualar un número entero? ¿Una secuencia de uno o más dígitos?
 
-(((plus character)))(((repetition)))(((+ operator)))When you put a
-plus sign (`+`) after something in a regular expression, it indicates
-that the element may be repeated more than once. Thus, `/\d+/` matches
-one or more digit characters.
+(((plus character)))(((repetition)))(((+ operator))) Cuando se coloca un signo más (`_+_`) después de algo en una expresión regular, indica que el elemento se puede repetir más de una vez. Así, `_/\d+/_` coincide con uno o más caracteres de dígito.
 
 [source,javascript]
 ----
@@ -215,15 +140,9 @@ console.log(/'\d*'/.test("''"));
 // → true
 ----
 
-(((pass:[*] operator)))(((asterisk)))The star (`*`) has a similar
-meaning but also allows the pattern to match zero times. Something
-with a star after it never prevents a pattern from matching—it'll just
-match zero instances if it can't find any suitable text to match.
+(((pass:[*] operator)))(((asterisk)))El asterisco (_`*`_) tiene un significado similar, pero también permite que el patrón coincida cero veces. Algo con un _`*`_ al final, nunca impide un patrón de emparejamiento. Igualará cero instancias si no puede encontrar cualquier texto adecuado al patrón.
 
-(((British English)))(((American English)))(((question mark)))A
-question mark makes a part of a pattern “((optional))”, meaning it may
-occur zero or one time. In the following example, the _u_ character
-is allowed to occur, but the pattern also matches when it is missing.
+(((British English)))(((American English)))(((question mark)))Un signo de interrogación (_`?`_) hace que una parte de un patrón sea "opcional", lo que significa que puede ocurrir ninguna o una vez. En el ejemplo siguiente, se permite que el carácter _u_ se produzca, pero el patrón también coincide (_matchea_) cuando este falta.
 
 [source,javascript]
 ----
@@ -234,16 +153,10 @@ console.log(neighbor.test("neighbor"));
 // → true
 ----
 
-(((repetition)))(((curly braces)))To indicate that a pattern should
-occur a precise number of times, use curly braces. Putting `{4}` after
-an element, for example, requires it to occur exactly four times. It
-is also possible to specify a ((range)) this way: `{2,4}` means the
-element must occur at least twice and at most four times.
+(((repetition)))(((curly braces)))Para indicar que un patrón debe ocurrir un número exacto de veces, utilice llaves (_`{}`_). Poner `_{4}_` después de un elemento, por ejemplo, indica que se requiere que el elemento se encuentre (o matchee) exactamente cuatro veces. También es posible especificar un rango de esta manera: `_{2,4}_` significa que el elemento debe ocurrir al menos dos veces y como máximo cuatro veces.
 
 [[date_regexp_counted]]
-Here is another version of the ((date)) and ((time)) pattern that
-allows both single- and double-((digit)) days, months, and hours. It
-is also slightly more readable.
+Aquí hay otra versión del patrón de fecha y hora que permite los días, meses y horas de un solo dígito y dos dígitos, lo que lo hace más agradable y fácil de leer.
 
 [source,javascript]
 ----
@@ -252,17 +165,11 @@ console.log(dateTime.test("30-1-2003 8:45"));
 // → true
 ----
 
-You can also specify open-ended ((range))s when using ((curly braces))
-by omitting the number after the comma. So `{5,}` means five or more
-times.
+También puede especificar rangos abiertos cuando se usan llaves, omitiendo el número después de la coma. Así que `_{5,}_` significa cinco o más veces.
 
-== Grouping subexpressions ==
+== Agrupar subexpresiones ==
 
-(((regular expression,grouping)))(((grouping)))To use an operator like `*` or
-`+` on more than one element at a time, you can use ((parentheses)). A
-part of a regular expression that is enclosed in parentheses counts
-as a single element as far as the operators following it are
-concerned.
+(((regular expression,grouping)))(((grouping)))Para usar un operador como `_*_` o `_+_` en más de un elemento a la vez, puede utilizar paréntesis `_()_`. Una parte de una expresión regular que está encerrada entre paréntesis cuenta como un solo elemento en lo que se refiere a los operadores que lo siguen.
 
 [source,javascript]
 ----
@@ -271,24 +178,14 @@ console.log(cartoonCrying.test("Boohoooohoohooo"));
 // → true
 ----
 
-(((crying)))The first and second `+` characters apply only to the
-second _o_ in _boo_ and _hoo_, respectively. The third `+` applies to
-the whole group `(hoo+)`, matching one or more sequences like that.
+(((crying)))El primer `_+_` y el segundo `_+_` se aplican solamente al segundo `_o_` en `_boo_` y `_hoo_`, respectivamente. El tercero `_+_` se aplica a todo el grupo `_(hoo+)_`, haciendo coincidir una o más secuencias como esa.
 
 (((case sensitivity)))(((capitalization)))(((regular
-expression,flags)))The `i` at the end of the expression in the
-previous example makes this regular expression case insensitive, allowing it to
-match the uppercase _B_ in the input string, even though the pattern
-is itself all lowercase.
+expression,flags)))El `_i_` al final de la expresión en el ejemplo anterior hace que esta expresión regular no sea sensible a mayúsculas y minúsculas  (case insensitive), permitiendo que coincida con la mayúscula _B_ en la cadena de entrada, aunque el patrón es todo en minúsculas.
 
-== Matches and groups ==
+== Matcheos y grupos ==
 
-(((regular expression,grouping)))(((exec method)))(((array)))The `test` method
-is the absolute simplest way to match a regular expression. It 
-tells you only whether it matched and nothing else. Regular expressions
-also have an `exec` (execute) method that will return `null` if no
-match was found and return an object with information about the match
-otherwise.
+(((regular expression,grouping)))(((exec method)))(((array)))El método `_test_` es la forma más simple de buscar coincidencias con una expresión regular. Sólo dice si coincide y nada más. Las expresiones regulares también tienen un método `_exec_` (ejecutar) que devolverá `_null_` si no se encontró ninguna coincidencia o, si encontró una,  devolverá un objeto con información sobre la coincidencia.
 
 [source,javascript]
 ----
@@ -299,15 +196,9 @@ console.log(match.index);
 // → 8
 ----
 
-(((index property)))(((string,indexing)))An object returned from
-`exec` has an `index` property that tells us _where_ in the string the
-successful match begins. Other than that, the object looks like (and
-in fact is) an array of strings, whose first element is the string
-that was matched—in the previous example, this is the sequence of
-((digit))s that we were looking for.
+(((index property)))(((string,indexing)))Un objeto devuelto desde el método `_exec_` tiene una propiedad `_índex_` que nos dice en dónde comienza la coincidencia correcta en la cadena. Aparte de eso, el objeto se ve como (y de hecho es) una matriz de cadenas, cuyo primer elemento es la cadena que matcheó (en el ejemplo anterior, ésta es la secuencia de dígitos que estábamos buscando).
 
-(((string,methods)))(((match method)))String values have a `match`
-method that behaves similarly.
+(((string,methods)))(((match method)))Los valores de cadena tienen un método `_match_` de coincidencia que se comporta de manera similar.
 
 [source,javascript]
 ----
@@ -315,12 +206,7 @@ console.log("one two 100".match(/\d+/));
 // → ["100"]
 ----
 
-(((grouping)))(((capture group)))(((exec method)))When the regular
-expression contains subexpressions grouped with parentheses, the text
-that matched those groups will also show up in the array. The whole
-match is always the first element. The next element is the part
-matched by the first group (the one whose opening parenthesis comes
-first in the expression), then the second group, and so on.
+(((grouping)))(((capture group)))(((exec method)))Cuando la expresión regular contiene subexpresiones agrupadas con paréntesis, el texto que coincida con esos grupos también aparecerá en la matriz. Todo el `_match_` es siempre el primer elemento. El siguiente elemento es la parte que coincidió por el primer grupo (aquel cuyo paréntesis de apertura viene primero en la expresión), luego el segundo grupo, y así sucesivamente.
 
 [source,javascript]
 ----
@@ -329,10 +215,7 @@ console.log(quotedText.exec("she said 'hello'"));
 // → ["'hello'", "hello"]
 ----
 
-(((capture group)))When a group does not end up being matched at all
-(for example, when followed by a question mark), its position in the
-output array will hold `undefined`. Similarly, when a group is matched
-multiple times, only the last match ends up in the array.
+(((capture group)))Cuando un grupo no encuentra coincidencia en absoluto (por ejemplo, cuando es seguido por un signo de interrogación), su posición en la matriz de salida se mantendrá indefinida. Del mismo modo, cuando un grupo es matcheado varias veces, sólo el último match termina en la matriz.
 
 [source,javascript]
 ----
@@ -343,21 +226,13 @@ console.log(/(\d)+/.exec("123"));
 ----
 
 (((exec method)))(((regular
-expression,methods)))(((extraction)))Groups can be useful for
-extracting parts of a string. If we don't just want to verify whether
-a string contains a ((date)) but also extract it and construct an
-object that represents it, we can wrap parentheses around the digit
-patterns and directly pick the date out of the result of `exec`.
+expression,methods)))(((extraction)))Los grupos pueden ser útiles para extraer partes de una cadena. Si no queremos solamente verificar si una cadena contiene una fecha sino también queremos extraerla y construir un objeto que la represente, podemos insertar paréntesis alrededor de los patrones de dígitos y escoger directamente la fecha del resultado de `_exec_`.
 
-But first, a brief detour, in which we discuss the preferred way to
-store date and ((time)) values in JavaScript.
+Pero primero, un breve desvío en el que discutimos la forma preferida de almacenar valores de fecha y hora en JavaScript.
 
-== The date type ==
+== El tipo fecha ==
 
-(((constructor)))(((Date constructor)))JavaScript has a standard
-object type for representing ((date))s—or rather, points in ((time)).
-It is called `Date`. If you simply create a date object using `new`,
-you get the current date and time.
+(((constructor)))(((Date constructor)))JavaScript tiene un tipo (`_typeof_`) de objeto estándar para representar fechas, o más bien, puntos en el tiempo. Se llama `_Date_`. Si simplemente se crea un objeto `_Date_` con `_new_`, se obtienen la fecha y la hora actual.
 
 // test: no
 
@@ -367,8 +242,7 @@ console.log(new Date());
 // → Wed Dec 04 2013 14:24:57 GMT+0100 (CET)
 ----
 
-(((Date constructor)))You can also create an object for a specific
-time.
+(((Date constructor)))También puede crear un objeto para una hora específica.
 
 [source,javascript]
 ----
@@ -378,18 +252,11 @@ console.log(new Date(2009, 11, 9, 12, 59, 59, 999));
 // → Wed Dec 09 2009 12:59:59 GMT+0100 (CET)
 ----
 
-(((zero-based counting)))(((interface,design)))JavaScript uses a
-convention where month numbers start at zero (so December is 11), yet
-day numbers start at one. This is confusing and silly. Be careful.
+(((zero-based counting)))(((interface,design)))JavaScript utiliza una convención donde los números de mes empiezan en cero (por lo que diciembre es 11), sin embargo, los números de día empiezan en uno. Esto puede ser muy confuso y tonto. Ten mucho cuidado.
 
-The last four arguments (hours, minutes, seconds, and milliseconds)
-are optional and taken to be zero when not given.
+Los últimos cuatro argumentos (horas, minutos, segundos y milisegundos) son opcionales y se toman como cero cuando no se dan.
 
-(((getTime method)))Timestamps are stored as the number of
-milliseconds since the start of 1970, using negative numbers for
-times before 1970 (following a convention set by “((Unix time))”,
-which was invented around that time). The `getTime` method on a date object
-returns this number. It is big, as you can imagine.
+(((getTime method)))Las marcas de tiempo se almacenan como el número de milisegundos desde el comienzo de 1970, usando números negativos para tiempos anteriores a 1970 (siguiendo una convención establecida por “((Unix time))” creada en esa decada). El método `_getTime_` en un objeto de `_Date_` devuelve este número. Es un número grande.
 
 [source,javascript]
 ----
@@ -399,23 +266,13 @@ console.log(new Date(1387407600000));
 // → Thu Dec 19 2013 00:00:00 GMT+0100 (CET)
 ----
 
-(((Date.now function)))(((Date constructor)))If you give the `Date`
-constructor a single argument, that argument is treated as such
-a millisecond count. You can get the current millisecond count by
-creating a new `Date` object and calling `getTime` on it but also by
-calling the `Date.now` function.
+(((Date.now function)))(((Date constructor)))Si le da al constructor `_Date_` un solo argumento, ese argumento se trata como un recuento de milisegundos. Puede obtener el recuento actual de milisegundos creando un nuevo objeto `_Date_` y llamando a `_getTime_`, pero también llamando a la función `_Date.now_`.
 
 (((getFullYear method)))(((getMonth method)))(((getDate
 method)))(((getHours method)))(((getMinutes method)))(((getSeconds
-method)))(((getYear method)))Date objects provide methods like
-`getFullYear`, `getMonth`, `getDate`, `getHours`, `getMinutes`, and
-`getSeconds` to extract their components. There's also `getYear`,
-which gives you a rather useless two-digit year value (such as `93` or
-`14`).
+method)))(((getYear method)))Los objetos `_Date_` proporcionan métodos como `_getFullYear_`, `_getMonth_`, `_getDate_`, `_getHours_`, `_getMinutes_` y `_getSeconds_` para extraer sus componentes. También hay un método `_getYear_` que da un valor de año de dos dígitos bastante inútil (como 93 o 14).
 
-(((capture group)))Putting ((parentheses)) around the parts of the
-expression that we are interested in, we can now easily create a date
-object from a string.
+(((capture group)))Poniendo paréntesis alrededor de las partes de la expresión que nos interesa, ahora podemos crear fácilmente un objeto `_Date_` a partir de una cadena.
 
 [source,javascript]
 ----
@@ -432,25 +289,11 @@ console.log(findDate("30-1-2003"));
 
 == Word and string boundaries ==
 
-(((matching)))(((regular expression,boundary)))Unfortunately,
-`findDate` will also happily extract the nonsensical date 00-1-3000
-from the string `"100-1-30000"`. A match may happen anywhere in the
-string, so in this case, it'll just start at the second character and
-end at the second-to-last character.
+(((matching)))(((regular expression,boundary)))Desafortunadamente, `_findDate_` también obtendra fechas sin sentido del tipo 00-1-3000 de la cadena _"100-1-30000"_. Una coincidencia puede ocurrir en cualquier parte de la cadena, por lo que en este caso, sólo comenzará en el segundo carácter y finalizará en el segundo al último carácter.
 
-(((boundary)))(((caret character)))(((dollar sign)))If we want to
-enforce that the match must span the whole string, we can add the
-markers `^` and `$`. The caret matches the start of the input string,
-while the dollar sign matches the end. So, `/^\d+$/` matches a string
-consisting entirely of one or more digits, `/^!/` matches any string
-that starts with an exclamation mark, and `/x^/` does not match any
-string (there cannot be an _x_ before the start of the string).
+(((boundary)))(((caret character)))(((dollar sign)))Si queremos hacer que la coincidencia abarque toda la cadena, podemos agregar los marcadores _`^`_ y _`$`_. El _`^`_ coincide con el inicio de la cadena de entrada, mientras que _`$`_ coincide con el final. Por lo tanto, _`/^\d+$/`_ coincide con una cadena compuesta enteramente de uno o más dígitos, _`/^!/`_ coincide con cualquier cadena que comience con un signo de exclamación y _`/x^/`_ no coincide con ninguna cadena (no puede haber una _`x`_ antes el comienzo de la cadena).
 
-(((word boundary)))(((word character)))If, on the other hand, we just
-want to make sure the date starts and ends on a word boundary, we can
-use the marker `\b`. A word boundary can be the start or end of the
-string or any point in the string that has a word character (as in
-`\w`) on one side and a nonword character on the other.
+(((word boundary)))(((word character)))Si, por el contrario, sólo queremos asegurarnos de que la fecha empiece y termine en un límite de palabra, podemos usar el marcador _`\b`_. Un límite de palabra puede ser el comienzo o el final de la cadena o cualquier punto de la cadena que tenga un carácter de palabra (como en _`\w`_) en un lado y un carácter _`nonword`_ en el otro.
 
 [source,javascript]
 ----
@@ -460,22 +303,14 @@ console.log(/\bcat\b/.test("concatenate"));
 // → false
 ----
 
-(((matching)))Note that a boundary marker doesn't represent an actual
-character. It just enforces that the regular expression matches only
-when a certain condition holds at the place where it appears in the
-pattern.
+(((matching)))Tenga en cuenta que un marcador de límite no representa un carácter real. Sólo hace que la expresión regular coincida solamente si una determinada condición se mantiene donde aparece en el patrón.
 
-== Choice patterns ==
+== Patrones de elección ==
 
 (((branching)))(((regular expression,alternatives)))(((farm
-example)))Say we want to know whether a piece of text contains not
-only a number but a number followed by one of the words _pig_, _cow_,
-or _chicken_, or any of their plural forms.
+example)))Digamos que no queremos saber si una parte del texto contiene un número, sino que buscamos un número seguido por una de las palabras _pig_, _cow_ o _chicken_, o cualquiera de sus formas plurales.
 
-We could write three regular expressions and test them in turn, but
-there is a nicer way. The ((pipe character)) (`|`) denotes a
-((choice)) between the pattern to its left and the pattern to its
-right. So I can say this:
+Podríamos escribir tres expresiones regulares y probarlas a su vez, pero hay una manera más agradable. El carácter _|_ (tubo) indica una opción entre el patrón a su izquierda y el patrón a su derecha. Así que puedo decir esto:
 
 [source,javascript]
 ----
@@ -486,130 +321,59 @@ console.log(animalCount.test("15 pigchickens"));
 // → false
 ----
 
-(((parentheses)))Parentheses can be used to limit the part of the
-pattern that the pipe operator applies to, and you can put multiple
-such operators next to each other to express a choice between more
-than two patterns.
+(((parentheses)))Los paréntesis _()_ se pueden usar para limitar la parte del patrón a la que se aplica el operador _|_ (tubo) y se pueden poner varios operadores de este tipo, uno al lado del otro, para expresar opciones entre más de dos patrones.
 
-== The mechanics of matching ==
+== La mecánica del matcheo o coincidencia ==
 
-(((regular expression,matching)))(((matching,algorithm)))Regular
-expressions can be thought of as ((flow diagram))s. This is the
-diagram for the livestock expression in the previous example:
+(((regular expression,matching)))(((matching,algorithm)))Las expresiones regulares pueden considerarse diagramas de flujo. Este es el diagrama para el ejemplo anterior:
 
 image::img/re_pigchickens.svg[alt="Visualization of /\\b\\d+ (pig|cow|chicken)s?\\b/"]
 
-(((traversal)))Our expression matches a string if we can find a path
-from the left side of the diagram to the right side. We keep
-a current position in the string, and every time we move through a
-box, we verify that the part of the string after our current position
-matches that box.
+(((traversal)))Nuestra expresión coincide (_matchea_) con una cadena de caracteres si podemos seguir el camino desde el lado izquierdo del diagrama hacia el lado derecho. Mantenemos una posición en la cadena y, cada vez que nos movemos a través de una caja, verificamos que la parte de la cadena que dejamos atras coincide con dicha casilla.
 
-So if we try to match `"the 3 pigs"` with our regular expression, 
-our progress through the flow chart would look like this:
+Así que si tratamos de matchear `"the 3 pigs"` con nuestra expresión regular, nuestro progreso a través del diagrama de flujo sería así:
 
- - At position 4, there is a word ((boundary)), so we can move past
-   the first box.
+ - En la posición 4, hay un límite de palabras ((_boundary_)), por lo que podemos pasar de la primera casilla.
 
- - Still at position 4, we find a digit, so we can also move past the
-   second box.
+ - Todavía en la posición 4, encontramos un dígito, así que también podemos pasar de la segunda caja.
 
- - At position 5, one path loops back to before the second (digit) box,
-   while the other moves forward through the box that holds a single space
-   character. There is a space here, not a digit, so we must take the
-   second path.
+ - En la posición 5, un camino recorre hacia antes de la segunda (dígito) caja, mientras que el otro se mueve hacia adelante a través de la caja que contiene un solo carácter de espacio. Hay un espacio aquí, no un dígito, así que debemos tomar el segundo camino.
 
- - We are now at position 6 (the start of “pigs”) and at the three-way
-   branch in the diagram. We don't see “cow” or “chicken” here, but we
-   do see “pig”, so we take that branch.
+ - Ahora estamos en la posición 6 (el comienzo de "_pigs_") y en la rama de tres vías en el diagrama. No vemos "_cow_" o "_chiken_" aquí, pero sí vemos "_pig_", así que tomamos esa rama.
 
- - At position 9, after the three-way branch, one path skips
-   the _s_ box and goes straight to the final word boundary, while the other path
-   matches an _s_. There is an _s_ character here, not a word boundary,
-   so we go through the _s_ box.
+ - En la posición 9, después de la rama de tres vías, una ruta omite la caja _s_ y va directamente al límite final de la palabra, mientras que la otra ruta coincide con una _s_. Hay un carácter de s aquí, no una frontera de la palabra, así que vamos a través de la caja de _s_.
 
- - We're at position 10 (the end of the string) and can match only  a
-   word ((boundary)). The end of a string counts as a word boundary,
-   so we go through the last box and have successfully matched this
-   string.
+ - Estamos en la posición 10 (el final de la cadena) y puede coincidir sólo con un límite de palabra ((_boundary_)). El final de una cadena cuenta como un límite de palabra, por lo que pasamos por el último cuadro y hemos _matcheado_ con esta cadena..
 
 (((regular
-expression,matching)))(((matching,algorithm)))(((searching)))Conceptually,
-a regular expression engine looks for a match in a string as follows:
-it starts at the start of the string and tries a match there. In this
-case, there _is_ a word boundary there, so it'd get past the first
-box—but there is no digit, so it'd fail at the second box. Then it
-moves on to the second character in the string and tries to begin a
-new match there... and so on, until it finds a match or reaches the end
-of the string and decides that there really is no match.
+expression,matching)))(((matching,algorithm)))(((searching)))Conceptualmente, un motor de expresiones regulares busca una coincidencia en una cadena de la siguiente manera: comienza al principio de la cadena e intenta una coincidencia allí. En este caso, hay un límite de palabra (_word boundary_) allí, por lo que pasaría la primera casilla, pero no hay dígitos, por lo que fallaría en la segunda casilla. Luego se mueve al segundo carácter de la cadena e intenta comenzar un nuevo partido allí... y así sucesivamente, hasta que encuentre una coincidencia o llegue al final de la cadena y decida que realmente no hay coincidencia.
 
 [[backtracking]]
-== Backtracking ==
+== Retroceso ==
 
 (((regular expression,backtracking)))(((binary number)))(((decimal
 number)))(((hexadecimal number)))(((flow
-diagram)))(((matching,algorithm)))(((backtracking)))The regular
-expression `/\b([01]+b|\d+|[\da-f]+h)\b/` matches either a binary
-number followed by a _b_, a regular decimal number with no suffix
-character, or a hexadecimal number (that is, base 16, with the letters
-_a_ to _f_ standing for the digits 10 to 15) followed by an _h_. This
-is the corresponding diagram:
+diagram)))(((matching,algorithm)))(((backtracking)))La expresión regular `_/\b([01]+b|\d+|[\da-f]+h)\b/_` coincide con un número binario seguido de _a b_, un número decimal regular sin carácter de sufijo o un número hexadecimal (Es decir, base 16, con las letras de _a - f_ para representar dígitos _10_ a _15_) seguido de _h_. Este es el diagrama correspondiente:
 
 image::img/re_number.svg[alt="Visualization of /\\b([01]+b|\\d+|[\\da-f]+h)\\b/"]
 
-(((branching)))When matching this expression, it will often happen
-that the top (binary) branch is entered even though the input does not
-actually contain a binary number. When matching the string `"103"`,
-for example, it becomes clear only  at the 3 that we are in the wrong
-branch. The string _does_ match the expression, just not the branch we
-are currently in.
+(((branching)))Al hacer coincidir esta expresión, sucederá a menudo que la rama superior (binaria) se ingrese aunque la entrada no contenga realmente un número binario. Al buscar en la cadena "_103_", por ejemplo, sólo queda claro en el _3_ que estamos en la rama equivocada. La cadena coincide con la expresión, pero no con la rama en la que estamos actualmente.
 
-(((backtracking)))(((searching)))So the matcher _backtracks_. When
-entering a branch, it remembers its current position (in this
-case, at the start of the string, just past the first boundary box in
-the diagram) so that it can go back and try another branch if the
-current one does not work out. For the string `"103"`, after
-encountering the 3 character, it will start trying the branch for
-decimal numbers. This one matches, so a match is reported after all.
+(((backtracking)))(((searching)))Así que el _matcher_ retrocede. Al entrar en una rama recuerda su posición actual (en este caso, al comienzo de la cadena, justo después de la primera caja de límites en el diagrama) para que pueda volver atrás y probar otra rama si la actual no funciona. Para la cadena "_103_", después de encontrar el carácter _3_, comenzará a probar la rama para los números decimales. Éste coincide, por lo que un _match_ es reportado al final de todo.
 
-(((matching,algorithm)))The matcher stops as soon as it finds a full
-match. This means that if multiple branches could potentially match a
-string, only the first one (ordered by where the branches appear in
-the regular expression) is used.
+(((matching,algorithm)))El _matcher_ se detiene tan pronto como encuentra una coincidencia completa. Esto significa que si varias ramas podrían potencialmente coincidir con una cadena, sólo se utiliza la primera (ordenada según aparecen en la expresión regular).
 
-Backtracking also happens for ((repetition)) operators like + and `*`.
-If you match `/^.*x/` against `"abcxe"`, the `.*` part will first try
-to consume the whole string. The engine will then realize that it
-needs an _x_ to match the pattern. Since there is no _x_ past the end
-of the string, the star operator tries to match one character less.
-But the matcher doesn't find an _x_ after `abcx` either, so it
-backtracks again, matching the star operator to just `abc`. _Now_ it
-finds an _x_ where it needs it and reports a successful match from
-positions 0 to 4.
+El retroceso también ocurre para los operadores de repetición como `_+_` y `_*_`. Si coincide con `_/^.*x/_` contra "_`abcxe_`", la parte `_*_` Intentará primero consumir toda la cadena. El motor entonces se dará cuenta de que necesita una `_x_` para que coincida con el patrón. Puesto que no hay `_x_` superado el final de la cadena, el operador `_*_` intentara igualar un carácter menos. Pero el `_matcher_` tampoco encuentra una `_x_` después de `_abcx_`, por lo que retrocede de nuevo, haciendo coincidir el operador `_*_` con `_abc_`. Ahora si encuentra una `_x_` donde lo necesita e informa de una coincidencia exitosa desde las posiciones `_0_` a `_4_`.
 
-(((performance)))(((complexity)))It is possible to write regular
-expressions that will do a _lot_ of backtracking. This problem occurs
-when a pattern can match a piece of input in many different ways. For
-example, if we get confused while writing a binary-number regular expression, we
-might accidentally write something like `/([01]+)+b/`.
+(((performance)))(((complexity)))Es posible escribir expresiones regulares con mucho retroceso (_backtracking_). Esto se produce cuando un patrón puede coincidir con una pieza de entrada de muchas maneras diferentes. Por ejemplo, si nos confundimos al escribir una expresión regular de un número binario, podríamos escribir algo como `_/([01]+)+b/_`.
 
 image::img/re_slow.svg[alt="Visualization of /([01]+)+b/",width="6cm"]
 
-(((inner loop)))(((nesting,in regexps)))If that tries to match some
-long series of zeros and ones with no trailing _b_ character, the
-matcher will first go through the inner loop until it runs out of
-digits. Then it notices there is no _b_, so it backtracks one
-position, goes through the outer loop once, and gives up again, trying
-to backtrack out of the inner loop once more. It will continue to try
-every possible route through these two loops. This means the amount of
-work _doubles_ with each additional character. For even just a few
-dozen characters, the resulting match will take practically forever.
+(((inner loop)))(((nesting,in regexps)))Si intenta hacer coincidir una serie larga de ceros y unos sin ningún carácter _b_, el _matcher_ primero pasará por el bucle interno hasta que se quede sin dígitos. Entonces advierte que no hay _b_, por lo que retrocede una posición, pasa por el bucle externo una vez, y se da de nuevo, tratando de retroceder fuera del bucle interior una vez más. Seguirá intentando cada ruta posible a través de estos dos bucles. Esto significa que la cantidad de trabajo se duplica con cada carácter adicional. Para incluso sólo unas pocas docenas de caracteres, el _matcheo_ resultante puede ser prácticamente eterno.
 
-== The replace method ==
+== El método de reemplazo ==
 
-(((replace method)))(((regular expression)))String values have a
-`replace` method, which can be used to replace part of the string
-with another string.
+(((replace method)))(((regular expression)))Los valores de cadena tienen un método `_replace_`, que se puede usar para reemplazar parte de la cadena con otra cadena.
 
 [source,javascript]
 ----
@@ -617,11 +381,7 @@ console.log("papa".replace("p", "m"));
 // → mapa
 ----
 
-(((regular expression,flags)))(((regular expression,global)))The first
-argument can also be a regular expression, in which case the first
-match of the regular expression is replaced. When a `g` option (for
-_global_) is added to the regular expression, _all_ matches in the
-string will be replaced, not just the first.
+(((regular expression,flags)))(((regular expression,global)))El primer argumento también puede ser una expresión regular, en cuyo caso la primera coincidencia de la expresión regular se sustituye. Cuando se agrega una opción `_g_` (global) a la expresión regular, _todas_ las coincidencias de la cadena se reemplazarán, no sólo la primera.
 
 [source,javascript]
 ----
@@ -631,20 +391,10 @@ console.log("Borobudur".replace(/[ou]/g, "a"));
 // → Barabadar
 ----
 
-(((interface,design)))(((argument)))It would have been sensible if the
-choice between replacing one match or all matches was made through an
-additional argument to `replace` or by providing a different method,
-`replaceAll`. But for some unfortunate reason, the choice relies on a
-property of the regular expression instead.
+(((interface,design)))(((argument)))Hubiera sido razonable si la opción entre reemplazar un solo patrón o todos los patrones se hiciera a través de un argumento adicional o proporcionando un método diferente como `_replaceAll_`, pero por alguna razón, esta opción se indica en una propiedad de la misma expresión regular.
 
 (((grouping)))(((capture group)))(((dollar sign)))(((replace
-method)))(((regular expression,grouping)))The real power of using
-regular expressions with `replace` comes from the fact that we can
-refer back to matched groups in the replacement string. For example,
-say we have a big string containing the names of people, one name per
-line, in the format `Lastname, Firstname`. If we want to swap these
-names and remove the comma to get a simple `Firstname Lastname`
-format, we can use the following code:
+method)))(((regular expression,grouping)))El poder real de usar expresiones regulares con `_replace_` viene del hecho de que podemos referirnos de nuevo a los grupos coincidentes en la cadena de reemplazo. Por ejemplo, digamos que tenemos una cadena grande que contiene los nombres de las personas, un nombre por línea, en el formato Apellido, Nombre. Si queremos intercambiar estos nombres y eliminar la coma para obtener un simple formato apellido-nombre, podemos utilizar el siguiente código:
 
 [source,javascript]
 ----
@@ -656,18 +406,11 @@ console.log(
 //   Dennis Ritchie
 ----
 
-The `$1` and `$2` in the replacement string refer to the parenthesized
-groups in the pattern. `$1` is replaced by the text that matched
-against the first group, `$2` by the second, and so on, up to `$9`.
-The whole match can be referred to with `$&`.
+Los `_$1_` y `_$2_` en la cadena de reemplazo se refieren a los grupos entre paréntesis en el patrón. $1 se sustituye por el texto que coincide con el primer grupo, `_$2_` por el segundo, y así sucesivamente hasta `_$9_`. Todo el `_match_` puede ser referido con `_$&_`.
 
-(((function,higher-order)))(((grouping)))(((capture group)))It is also
-possible to pass a function, rather than a string, as the second
-argument to `replace`. For each replacement, the function will be
-called with the matched groups (as well as the whole match) as
-arguments, and its return value will be inserted into the new string.
+(((function,higher-order)))(((grouping)))(((capture group)))También es posible pasar una función, en lugar de una cadena, como el segundo argumento a reemplazar. Para cada reemplazo, la función se llamará con los grupos coincidentes (así como la coincidencia completa) como argumentos, y su valor de retorno se insertará en la nueva cadena.
 
-Here's a simple example:
+Aquí hay un ejemplo sencillo:
 
 [source,javascript]
 ----
@@ -678,7 +421,7 @@ console.log(s.replace(/\b(fbi|cia)\b/g, function(str) {
 // → the CIA and FBI
 ----
 
-And here's a more interesting one:
+Y aquí hay una más interesante:
 
 [source,javascript]
 ----
@@ -695,20 +438,13 @@ console.log(stock.replace(/(\d+) (\w+)/g, minusOne));
 // → no lemon, 1 cabbage, and 100 eggs
 ----
 
-This takes a string, finds all occurrences of a number followed by an
-alphanumeric word, and returns a string wherein every such occurrence
-is decremented by one.
+Este ejemplo toma una cadena, encuentra todas las veces que aparece un número seguido de una palabra alfanumérica, y devuelve una cadena (_string_) en la que cada una de tales apariciones se decrementa en una.
 
-The `(\d+)` group ends up as the `amount` argument to the function,
-and the `(\w+)` group gets bound to `unit`. The function converts
-`amount` to a number—which always works, since it matched `\d+`—and
-makes some adjustments in case there is only one or zero left.
+El grupo `_(\d+)_` termina como el argumento `_amount_` de la función, y el grupo `_(\w+)_` se vincula al argumento `_unit_`. La función convierte `_amount_` en un número -que siempre funciona, ya que coincide con `_\d+-_` y hace algunos ajustes en caso de que sólo quede uno o cero, como quitar el plural o avisar la falta de stock con la palabra “no”.
 
-== Greed ==
+== Codicia ==
 
-(((greed)))(((regular expression)))It isn't hard to use `replace` to
-write a function that removes all ((comment))s from a piece of
-JavaScript ((code)). Here is a first attempt:
+(((greed)))(((regular expression)))No es difícil utilizar `_replace_` para escribir una función que elimina todos los comentarios de una pieza de código JavaScript. He aquí un primer intento:
 
 // test: wrap
 
@@ -726,37 +462,15 @@ console.log(stripComments("1 /* a */+/* b */ 1"));
 ----
 
 (((period character)))(((slash character)))(((newline
-character)))(((empty set)))(((block comment)))(((line comment)))The
-part before the _or_ operator simply matches two slash characters
-followed by any number of non-newline characters. The part for
-multiline comments is more involved. We use `[^]` (any character that
-is not in the empty set of characters) as a way to match any
-character. We cannot just use a dot here because block comments can
-continue on a new line, and dots do not match the newline character.
+character)))(((empty set)))(((block comment)))(((line comment)))La parte anterior al operador `_or_` (o) simplemente hace coincidir dos caracteres de barra diagonal seguidos de cualquier número de caracteres de no-nueva-línea. La parte para comentarios multilínea está más involucrada. Utilizamos `_[^]_` (cualquier carácter que no esté en el conjunto vacío de caracteres) como una forma de coincidir con cualquier carácter. No podemos usar un punto aquí porque los comentarios de bloque pueden continuar en una nueva línea y los puntos no coinciden con el carácter de nueva-línea.
 
-But the output of the previous example appears to have gone wrong. Why?
+Pero la salida del ejemplo anterior parece funcionar mal. ¿Por qué?
 
-(((backtracking)))(((greed)))(((regular expression)))The `[^]*` part of
-the expression, as I described in the section on backtracking, will
-first match as much as it can. If that causes the next part of the
-pattern to fail, the matcher moves back one character and tries again
-from there. In the example, the matcher first tries to match the whole
-rest of the string and then moves back from there. It will find an
-occurrence of `*/` after going back four characters and match that.
-This is not what we wanted—the intention was to match a single
-comment, not to go all the way to the end of the code and find the end
-of the last block comment.
+(((backtracking)))(((greed)))(((regular expression)))La parte `_[^]*_` de la expresión, tal como describí en la sección de retroceso, se ajustará primero tanto como pueda. Si esto hace que la siguiente parte del patrón falle, el _matcher_ retrocede un carácter e intenta de nuevo desde allí. En el ejemplo, el primero busca coincidir con todo el resto de la cadena (_string_) y luego retrocede desde allí. Encontrará una instancia de `_*/_` después de volver cuatro caracteres y emparejar eso. Esto no es lo que queríamos: la intención era hacer coincidir un solo comentario, no ir hasta el final del código y encontrar el final del último comentario de bloque.
 
-Because of this behavior, we say the repetition operators (`+`, `*`,
-`?`, and `{}`) are _((greed))y_, meaning they match as much as they
-can and backtrack from there. If you put a ((question mark)) after
-them (`+?`, `*?`, `??`, `{}?`), they become nongreedy and start by
-matching as little as possible, matching more only when the remaining
-pattern does not fit the smaller match.
+Debido a este comportamiento, decimos que los operadores de repetición (`_+_`, `_*_`, `_?_`, y `_{}_`) son codiciosos, lo que significa que coinciden tanto como pueden y retroceden desde allí. Si lo combinas con un signo de interrogación (`_+?_`, `_*?_`, `_??_`, `_{}_`?), pierden su codicia y empiezan por coincidir lo menos posible, _matcheando_ más sólo cuando el patrón restante no encaja en el _match_ más pequeño.
 
-And that is exactly what we want in this case. By having the star
-match the smallest stretch of characters that brings us to a `*/`,
-we consume one block comment and nothing more.
+Y eso es exactamente lo que queremos en este caso. Al tener `_*_` coincidir con la menor extensión de caracteres que nos lleve a un `_*/_`, consumimos un comentario de bloque y nada más.
 
 // test: wrap
 
@@ -767,25 +481,16 @@ function stripComments(code) {
 }
 console.log(stripComments("1 /* a */+/* b */ 1"));
 // → 1 + 1
-----
+--?-
 
-A lot of ((bug))s in ((regular expression)) programs can be traced to
-unintentionally using a greedy operator where a nongreedy one would
-work better. When using a ((repetition)) operator, consider the
-nongreedy variant first.
+Una gran cantidad de errores ((_bug_)) en los programas de expresión regular se puede detectar al comprobar el uso indebido de este comportamiento codicioso de un operador de repetición. Cuando utilice un operador de repetición, considere primero la variante de cambiar su comportamiento con `_?_`.
 
-== Dynamically creating RegExp objects ==
+== Creación dinámica de objetos RegExp ==
 
 (((regular expression,creation)))(((underscore character)))(((RegExp
-constructor)))There are cases where you might not know the exact
-((pattern)) you need to match against when you are writing your code.
-Say you want to look for the user's name in a piece of text and
-enclose it in underscore characters to make it stand out. Since you
-will know the name only once the program is actually running, you
-can't use the slash-based notation.
+constructor)))Hay casos en los que puede que no conozca el patrón exacto que necesita para _matchear_ en el momento que está escribiendo su código. Digamos que desea buscar el nombre del usuario en un fragmento de texto y adjuntarlo en caracteres de subrayado para que se destaque. Dado que sabrá el nombre sólo una vez que el programa se esté ejecutando, no podrá utilizar la notación basada en barras.
 
-But you can build up a string and use the `RegExp` ((constructor)) on
-that. Here's an example:
+Pero puede construir una cadena y usar el constructor `_RegExp_`. He aquí un ejemplo:
 
 [source,javascript]
 ----
@@ -796,23 +501,12 @@ console.log(text.replace(regexp, "_$1_"));
 // → _Harry_ is a suspicious character.
 ----
 
-(((regular expression,flags)))(((backslash character)))When creating
-the `\b` ((boundary)) markers, we have to use two backslashes because
-we are writing them in a normal string, not a slash-enclosed regular
-expression. The second argument to the `RegExp` constructor contains
-the options for the regular expression—in this case `"gi"` for global
-and case-insensitive.
+(((regular expression,flags)))(((backslash character)))Al crear los `_\b_` ((_boundary_)) marcadores de frontera, tenemos que usar dos barras invertidas porque las estamos escribiendo en una cadena normal, no una expresión regular con barra inclinada. El segundo argumento para el constructor `_RegExp_` contiene las opciones para la expresión regular, en este caso `_"gi"_` para global y sin distinción entre mayúsculas y minúsculas.
 
-But what if the name is `"dea+hl[]rd"` because our user is a ((nerd))y
-teenager? That would result in a nonsensical regular expression, which
-won't actually match the user's name.
+¿Pero qué ocurre si el nombre es `_"dea+hl[]rd"_`, un nombre posble si nuestro usuario es un ((nerd)) adolescente? Esto daría lugar a una expresión regular absurda, que no coincidirá con el nombre del usuario.
 
 (((backslash character)))(((escaping,in regexps)))(((regular
-expression,escaping)))To work around this, we can add backslashes
-before any character that we don't trust. Adding backslashes before
-alphabetic characters is a bad idea because things like `\b` and `\n`
-have a special meaning. But escaping everything that's not
-alphanumeric or ((whitespace)) is safe.
+expression,escaping)))Para evitar esto, podemos agregar barras inversas antes de cualquier carácter en el que no confiamos. Agregar barras invertidas antes de caracteres alfabéticos es una mala idea porque cosas como `_\b_` y `_\n_` tienen un significado especial. Pero escapar de todo lo que no es alfanumérico o espacio en blanco es seguro.
 
 [source,javascript]
 ----
@@ -824,14 +518,10 @@ console.log(text.replace(regexp, "_$1_"));
 // → This _dea+hl[]rd_ guy is super annoying.
 ----
 
-== The search method ==
+== El método search (búsqueda) ==
 
 (((searching)))(((regular expression,methods)))(((indexOf
-method)))(((search method)))The `indexOf` method on strings cannot be
-called with a regular expression. But there is another method,
-`search`, which does expect a regular expression. Like `indexOf`, it
-returns the first index on which the expression was found, or -1 when
-it wasn't found.
+method)))(((search method)))El método `_indexOf_` de cadenas no se puede llamar desde una expresión regular. Pero hay otro método, `_search_`, que se puede invocar en una expresión regular. Al igual que `_indexOf_`, devuelve el primer índice en el que se encontró la expresión o devolverá _-1_ si no encontró nada.
 
 [source,javascript]
 ----
@@ -841,30 +531,18 @@ console.log("    ".search(/\S/));
 // → -1
 ----
 
-Unfortunately, there is no way to indicate that the match should start
-at a given offset (like we can with the second argument to `indexOf`),
-which would often be useful.
+Desafortunadamente, no hay manera de indicar que el _matcheo_ comience en un determinado indice (como si podemos hacerlo con el segundo argumento en `_indexOf_`).
 
-== The lastIndex property ==
+== La propiedad lastIndex ==
 
-(((exec method)))(((regular expression)))The `exec` method similarly
-does not provide a convenient way to start searching from a given
-position in the string. But it does provide an __in__convenient way.
+(((exec method)))(((regular expression)))El método `_exec_` tampoco proporciona una manera comoda de iniciar una búsqueda desde una posición dada en la cadena, pero al menos si proporciona una manera incómoda de hacerlo.
 
 (((regular expression,matching)))(((matching)))(((source
-property)))(((lastIndex property)))Regular expression objects have
-properties. One such property is `source`, which contains the string
-that expression was created from. Another property is `lastIndex`,
-which controls, in some limited circumstances, where the next match
-will start.
+property)))(((lastIndex property)))Los objetos de expresión regular tienen propiedades. Una de estas propiedades es `_source_`, que contiene la cadena original de la que se creó la expresión. Otra propiedad es `_lastIndex_`, que controla, solo en algunas circunstancias, donde se iniciará la próxima partida.
+
 
 (((interface,design)))(((exec method)))(((regular
-expression,global)))Those circumstances are that the regular
-expression must have the global (`g`) option enabled, and the match
-must happen through the `exec` method. Again, a more sane solution
-would have been to just allow an extra argument to be passed to
-`exec`, but sanity is not a defining characteristic of JavaScript's
-regular expression interface.
+expression,global)))Esas circunstancias son que la expresión regular debe tener activada la opción global (`_g_`), y la coincidencia debe pasar a través del método `_exec_`. Una vez más, una solución más lógica habría sido simplemente permitir que un argumento extra fuera pasado a `_exec_`, pero la cordura no es una característica de la interfaz de expresión regular de JavaScript.
 
 [source,javascript]
 ----
@@ -877,16 +555,9 @@ console.log(pattern.lastIndex);
 // → 5
 ----
 
-(((side effect)))(((lastIndex property)))If the match was successful,
-the call to `exec` automatically updates the `lastIndex` property to
-point after the match. If no match was found, `lastIndex` is set back
-to zero, which is also the value it has in a newly constructed regular
-expression object.
+(((side effect)))(((lastIndex property)))Si el resultado fue satisfactorio, la llamada a `_exec_` actualiza automáticamente la propiedad `_lastIndex_` para apuntar después de la coincidencia. Si no se encontró ninguna coincidencia, `_lastIndex_` se pone de nuevo a cero, que es también el valor que tiene en un objeto de expresión regular de nueva construcción.
 
-(((bug)))When using a global regular expression value for multiple
-`exec` calls, these automatic updates to the `lastIndex` property can
-cause problems. Your regular expression might be accidentally starting
-at an index that was left over from a previous call.
+(((bug)))Cuando se utiliza un valor de expresión regular global para varias llamadas `_exec_`, estas actualizaciones automáticas a la propiedad `_lastIndex_` pueden causar problemas. Su expresión regular podría iniciarse accidentalmente en un índice que quedó de una llamada anterior.
 
 [source,javascript]
 ----
@@ -897,12 +568,7 @@ console.log(digit.exec("and now: 1"));
 // → null
 ----
 
-(((regular expression,global)))(((match method)))Another interesting
-effect of the global option is that it changes the way the `match`
-method on strings works. When called with a global expression, instead
-of returning an array similar to that returned by `exec`, `match` will
-find _all_ matches of the pattern in the string and return an array
-containing the matched strings.
+(((regular expression,global)))(((match method)))Otro efecto interesante de la opción global es que cambia la forma en que funciona el método de coincidencia en cadenas (`_match_`). Cuando se llama con una expresión global, en lugar de devolver una matriz similar a la devuelta por `_exec_`, `_match_` encontrará todas las coincidencias del patrón en la cadena y devuelve una matriz que contiene las cadenas coincidentes.
 
 [source,javascript]
 ----
@@ -910,17 +576,11 @@ console.log("Banana".match(/an/g));
 // → ["an", "an"]
 ----
 
-So be cautious with global regular expressions. The cases where they
-are necessary—calls to `replace` and places where you want to
-explicitly use ++lastIndex++—are typically the only places where you
-want to use them.
+Así que tenga cuidado con las expresiones regulares globales. Los casos en los que son necesarios (las llamadas a `_replace_` y los lugares donde se desea utilizar explícitamente `_lastIndex_`) suelen ser los únicos lugares donde debería utilizarlos.
 
-=== Looping over matches ===
+=== Bucle de matchs ===
 
-(((lastIndex property)))(((exec method)))(((loop)))A common pattern is
-to scan through all occurrences of a pattern in a string, in a way
-that gives us access to the match object in the loop body, by using
-`lastIndex` and `exec`.
+(((lastIndex property)))(((exec method)))(((loop)))Un patrón común es escanear todas las instancias de un patrón en una cadena, de una manera que nos da acceso al objeto de coincidencia en el cuerpo del bucle, usando `_lastIndex_` y `_exec_`.
 
 [source,javascript]
 ----
@@ -934,23 +594,12 @@ while (match = number.exec(input))
 //   Found 88 at 40
 ----
 
-(((while loop)))(((= operator)))This makes use of the fact that the
-value of an ((assignment)) expression (`=`) is the assigned value. So
-by using `match = number.exec(input)` as the condition in the `while`
-statement, we perform the match at the start of each iteration, save
-its result in a ((variable)), and stop looping when no more matches
-are found.
+(((while loop)))(((= operator)))Esto hace uso del hecho de que el valor de una expresión de asignación (`_=_`) es el valor asignado. Por lo tanto, utilizando `_match = number.exec(input)_` como condición en la sentencia `_while_`, realizamos la coincidencia al comienzo de cada iteración, guardamos su resultado en una ((variable)) y detenemos el bucle (_loop_) cuando no se encuentran más coincidencias.
 
 [[ini]]
-== Parsing an INI file ==
+== Análisis de un archivo INI ==
 
-(((comment)))(((file format)))(((enemies example)))(((ini file)))To
-conclude the chapter, we'll look at a problem that calls for ((regular
-expression))s. Imagine we are writing a program to automatically
-harvest information about our enemies from the ((Internet)). (We will
-not actually write that program here, just the part that reads the
-((configuration)) file. Sorry to disappoint.) The configuration file
-looks like this:
+(((comment)))(((file format)))(((enemies example)))(((ini file)))Para concluir el capítulo, veremos un problema que requiere expresiones regulares. Imagina que estamos escribiendo un programa para recolectar automáticamente información sobre nuestros enemigos desde ((Internet)). (En realidad, no escribiremos ese programa aquí, solo la parte que lee el archivo de configuración. Sentimos decepcionarlo.) El archivo de configuración se verá así:
 
 [source,text/plain]
 ----
@@ -970,32 +619,19 @@ type=evil sorcerer
 outputdir=/home/marijn/enemies/gargamel
 ----
 
-(((grammar)))The exact rules for this format (which is actually a
-widely used format, usually called an _INI_ file) are as follows:
+(((grammar)))Las reglas exactas para este formato (que en realidad es un formato ampliamente utilizado, generalmente llamado archivo INI) son las siguientes:
 
-- Blank lines and lines starting with semicolons are ignored.
+- Las líneas en blanco y líneas que comienzan con punto y coma son ignoradas.
 
-- Lines wrapped in `[` and `]` start a new ((section)).
+- Líneas envueltas en llaves (_[]_) inician una nueva sección.
 
-- Lines containing an alphanumeric identifier followed by an `=`
-  character add a setting to the current section.
+- Las líneas que contienen un identificador alfanumérico seguido de un carácter = añaden una configuración a la sección actual.
 
-- Anything else is invalid.
+- Cualquier otra cosa es inválida.
 
-Our task is to convert a string like this into an array of objects,
-each with a `name` property and an array of settings. We'll need one
-such object for each section and one for the global settings at the
-top.
+Nuestra tarea es convertir una cadena como ésta en una matriz de objetos, cada uno con una propiedad `_name_` y una matriz de configuraciones. Necesitaremos un objeto para cada sección y otro para la configuración global en la parte superior.
 
-(((carriage return)))(((line break)))(((newline character)))Since the
-format has to be processed ((line)) by line, splitting up the file 
-into separate lines is a good start. We used `string.split("\n")` to
-do this in link:06_object.html#split[Chapter 6]. Some operating
-systems, however, use not just a newline character to separate lines
-but a carriage return character followed by a newline (`"\r\n"`).
-Given that the `split` method also allows a regular expression as its
-argument, we can split on a regular expression like `/\r?\n/` to split
-in a way that allows both `"\n"` and `"\r\n"` between lines.
+(((carriage return)))(((line break)))(((newline character)))Dado que el formato tiene que ser procesado línea por línea, dividir el archivo en líneas separadas es un buen comienzo. No obstante, algunos sistemas operativos utilizan no sólo un carácter de nueva línea para separar líneas, sino un carácter de retorno de carro seguido de una nueva línea (`_"\r\n"_`). Dado que el método `_split_` también permite que una expresión regular sea su argumento, podemos dividir en una expresión regular como `_/\r?\n/_` para dividir de una manera que permita tanto `_"\n"_` como `_"\r\n"_` entre líneas.
 
 [source,javascript]
 ----
@@ -1023,155 +659,83 @@ function parseINI(string) {
 }
 ----
 
-(((parseINI function)))(((parsing)))This code goes over every line in
-the file, updating the “current section” object as it goes along.
-First, it checks whether the line can be ignored, using the expression
-`/^\s*(;.*)?$/`. Do you see how it works? The part between the
-((parentheses)) will match comments, and the `?` will make sure it
-also matches lines containing only whitespace.
+(((parseINI function)))(((parsing)))Este código pasa por todas las líneas del archivo, actualizando el objeto "_currentSection_" a medida que avanza. En primer lugar, comprueba si la línea se puede ignorar, utilizando la expresión `_/^\s*(;.*)?$/_`. ¿Ves cómo funciona? La parte entre los paréntesis coincidirá con los comentarios, y el signo `_?_` se asegurará de que también coincida con las líneas que contienen sólo espacios en blanco.
 
-If the line is not a ((comment)), the code then checks whether the
-line starts a new ((section)). If so, it creates a new current section
-object, to which subsequent settings will be added.
+Cuando la línea no es un comentario, el código comprueba si la línea inicia una nueva sección. Si es así, crea un nuevo objeto de sección actual, al que se añadirán los ajustes siguientes.
 
-The last meaningful possibility is that the line is a normal setting,
-which the code adds to the current section object.
+La última posibilidad significativa es que la línea es un ajuste normal, por lo que nuestro código lo agregará al objeto de sección actual.
 
-If a ((line)) matches none of these forms, the function throws an
-error.
+Si una línea no coincide con ninguno de estos formularios, la función produce un error.
 
-(((caret character)))(((dollar sign)))(((boundary)))Note the recurring
-use of `^` and `$` to make sure the expression matches the whole line,
-not just part of it. Leaving these out results in code that mostly
-works but behaves strangely for some input, which can be a difficult
-bug to track down.
+(((caret character)))(((dollar sign)))(((boundary)))Tenga en cuenta el uso recurrente de `_^_` y `_$_` para asegurarse de que la expresión coincide con toda la línea, no sólo parte de ella. Dejando estos resultados en código que funciona sobre todo, pero se comporta extrañamente para algunos tipos de _input_, lo que puede originar un error difícil de rastrear.
 
-(((if keyword)))(((assignment)))(((= operator)))The pattern `if (match
-= string.match(...))` is similar to the trick of using an assignment
-as the condition for `while`. You often aren't sure that your call to
-`match` will succeed, so you can  access the resulting object only
-inside an `if` statement that tests for this. To not break the
-pleasant chain of `if` forms, we assign the result of the match to a
-variable and immediately use that assignment as the test in the `if`
-statement.
+(((if keyword)))(((assignment)))(((= operator)))El patrón `_if (match = string.match(...))_` es similar al truco de usar una asignación como condición para `_while_`. A menudo no estaremos seguros de que nuestra llamada a `_matchear_` tendrá éxito, por lo que se puede acceder al objeto resultante sólo dentro de una instrucción if que las pruebas de ello. Para no romper la agradable cadena que forma la sentencia `_if_`, asignamos el resultado de la coincidencia a una variable e inmediatamente utilizamos esa asignación como el `_test_` en la sentencia `_if_`.
 
-== International characters ==
+== Caracteres internacionales ==
 
-(((internationalization)))(((Unicode)))(((regular
-expression,internationalization)))Because of JavaScript's initial
-simplistic implementation and the fact that this simplistic approach
-was later set in stone as ((standard)) behavior, JavaScript's regular
-expressions are rather dumb about characters that do not appear in the
-English language. For example, as far as JavaScript's regular
-expressions are concerned, a “((word character))” is only one of the
-26 characters in the Latin alphabet (uppercase or lowercase) and, for
-some reason, the underscore character. Things like _é_ or _β_, which
-most definitely are word characters, will not match `\w` (and _will_
-match uppercase `\W`, the nonword category).
+(((internationalization)))(((Unicode)))(((regular expression,internationalization)))Debido a la implementación simplista inicial de JavaScript y al hecho de que este enfoque se estableció como base del comportamiento estándar, las expresiones regulares de JavaScript son bastante torpes acerca de los caracteres que no aparecen en el idioma inglés. Por ejemplo, en lo que se refiere a las expresiones regulares de JavaScript, un "_carácter para texto_" (_word character_) es sólo uno de los 26 caracteres del alfabeto latino (mayúsculas o minúsculas) y, por alguna razón, el carácter underscore (_). Caracteres como _é_ o _β_, que definitivamente son _caracteres de texto_, no coincidirán con `_\w_` (y coincidirán con  `_\W_`, carácter para no texto (_nonword category_)).
 
-(((whitespace)))By a strange historical accident, `\s` (whitespace)
-does not have this problem and matches all characters that the
-Unicode standard considers whitespace, including things like the
-((nonbreaking space)) and the ((Mongolian vowel separator)).
+(((whitespace)))Por un extraño accidente histórico, `_\s_` (espacio en blanco) no tiene este problema y coincide con todos los caracteres que el estándar _Unicode_ considera espacios en blanco, incluyendo cosas como el espacio no separable y el separador de vocales mongol.
 
-(((character category)))Some ((regular expression))
-((implementation))s in other programming languages have syntax to
-match specific ((Unicode)) character categories, such as “all
-uppercase letters”, “all punctuation”, or “control characters”. There
-are plans to add support for such categories JavaScript, but it
-unfortunately looks like they won't be realized in the near ((future)).
+(((character category)))Algunas implementaciones de expresiones regulares en otros lenguajes de programación tienen sintaxis para coincidir con categorías de caracteres Unicode específicas, como "todas las letras mayúsculas", "todos los signos de puntuación" o "caracteres de control". Hay planes para agregar soporte para JavaScript de estas categorías, pero por desgracia parece que no en un futuro próximo.
 
 [[summary_regexp]]
-== Summary ==
+== Resumen ==
 
-Regular expressions are objects that represent patterns in strings.
-They use their own syntax to express these patterns.
+Las expresiones regulares son objetos que representan patrones en cadenas. Utilizan su propia sintaxis para expresar estos patrones.
 
 [cols="1,5"]
 |====
-|`/abc/`     |A sequence of characters
-|`/[abc]/`   |Any character from a set of characters
-|`/[^abc]/`  |Any character _not_ in a set of characters
-|`/[0-9]/`   |Any character in a range of characters
-|`/x+/`      |One or more occurrences of the pattern `x`
-|`/x+?/`     |One or more occurrences, nongreedy
-|`/x*/`      |Zero or more occurrences
-|`/x?/`      |Zero or one occurrence
-|`/x{2,4}/`  |Between two and four occurrences
-|`/(abc)/`   |A group
-|++/a{brvbar}b{brvbar}c/++ |Any one of several patterns
-|`/\d/`      |Any digit character
-|`/\w/`      |An alphanumeric character (“word character”)
-|`/\s/`      |Any whitespace character
-|`/./`       |Any character except newlines
-|`/\b/`      |A word boundary
-|`/^/`       |Start of input
-|`/$/`       |End of input
+|`/abc/`     |Una secuencia de caracteres
+|`/[abc]/`   |Cualquier carácter en un conjunto de caracteres
+|`/[^abc]/`  |Cualquier carácter que no este en un conjunto de caracteres
+|`/[0-9]/`   |Cualqier carácter en un rango de caracteres
+|`/x+/`      |Una o mas ocurrencias del patron `x`
+|`/x+?/`     |Una o mas ocurrencias, no codiciosos
+|`/x*/`      |Cero o mas ocurrencias
+|`/x?/`      |Cero o una ocurrencia
+|`/x{2,4}/`  |Entre dos o cuatro ocurrencias
+|`/(abc)/`   |Un grupo
+|++/a{brvbar}b{brvbar}c/++ |Cualqiera de estos patrones
+|`/\d/`      |Cualquier carácter digital
+|`/\w/`      |Cualquier carácter alfanúmerico (“word character”)
+|`/\s/`      |Cualquier carácter de espacio en blanco
+|`/./`       |Cualquier carácter excepto nuevas líneas
+|`/\b/`      |Limite de palabra
+|`/^/`       |Inicio de la entrada
+|`/$/`       |Fin de la entrada
 |====
 
-A regular expression has a method `test` to test whether a given
-string matches it. It also has an `exec` method that, when a match is
-found, returns an array containing all matched groups. Such an array
-has an `index` property that indicates where the match started.
+Una expresión regular tiene un método `_test_` para comprobar si una cadena dada tiene coincidencias con ella. También tiene un método `_exec_` que, cuando se encuentra una coincidencia, devuelve una matriz que contiene todos los grupos coincidentes. Dicha matriz tiene una propiedad de índice (`_index_`) que indica dónde se inició la coincidencia.
 
-Strings have a `match` method to match them against a regular
-expression and a `search` method to search for one, returning only the
-starting position of the match. Their `replace` method can replace
-matches of a pattern with a replacement string. Alternatively, you can
-pass a function to `replace`, which will be used to build up a
-replacement string based on the match text and matched groups.
+Las cadenas tienen un método `_match_` para buscar coincidencia con una expresión regular y un método `_search_` para realizar busquedas, que devuelve sólo la posición inicial de la coincidencia. El método `_replace_`  puede reemplazar las coincidencias (los _matcheos_) de un patrón con una cadena de reemplazo. Como alternativa puedes crear una función `_replace_`,  y así crear una cadena de reemplazo basada en el texto de coincidencia y los grupos coincidentes.
 
-Regular expressions can have options, which are written after
-the closing slash. The `i` option makes the match case insensitive,
-while the `g` option makes the expression _global_, which, among other
-things, causes the `replace` method to replace all instances instead
-of just the first.
+Las expresiones regulares pueden tener opciones, que se escriben después de la barra de cierre (_|_). La opción `_i_` hace que el _matcheo_ sea insensible a mayusculas y minusculas (case insensitive), mientras que la opción `_g_` hace que la expresión sea global, eso genera, entre otras cosas, hace que el método _replace_ reemplace todas las instancias en lugar de sólo la primera.
 
-The `RegExp` constructor can be used to create a regular expression
-value from a string.
+El constructor `_RegExp_` se puede utilizar para crear un valor de expresión regular a partir de una cadena. 
 
-Regular expressions are a sharp ((tool)) with an awkward handle. They
-simplify some tasks tremendously but can quickly become unmanageable
-when applied to complex problems. Part of knowing how to use them is
-resisting the urge to try to shoehorn things that they cannot sanely
-express into them.
+Las expresiones regulares son una herramienta muy afilada con un comando torpe. Ello simplifican algunas tareas pero pueden volverse incontrolables cuando se aplican a problemas complejos. Parte de saber cómo usarlos es resistir el impulso de intentar utilizarlas en los casos incorrectos.
 
-== Exercises ==
+== Ejercicios ==
 
-(((debugging)))(((bug)))It is almost unavoidable that, in the course
-of working on these exercises, you will get confused and frustrated by
-some regular expression's inexplicable ((behavior)). Sometimes it
-helps to enter your expression into an online tool like
-https://www.debuggex.com/[_debuggex.com_] to see whether its
-visualization corresponds to what you intended and to ((experiment))
-with the way it responds to various input strings.
+(((debugging)))(((bug)))Es casi inevitable que cuando haga estos ejercicios, se confunda y se frustre por el comportamiento inexplicable de alguna expresión regular. A veces, ayuda a introducir su expresión en una herramienta en línea como https://www.debuggex.com/[_debuggex.com_] para ver si su solución corresponde con lo que usted buscaba y experimentar con la forma en que ésta responde a distintas cadenas.
 
 === Regexp golf ===
 
 (((program size)))(((code golf)))(((regexp golf (exercise))))_Code
-golf_ is a term used for the game of trying to express a particular
-program in as few characters as possible. Similarly, _regexp golf_ is
-the practice of writing as tiny a regular expression as possible to
-match a given pattern, and _only_ that pattern.
+golf_ es un término usado en un juego que busca expresar un programa determinado en la mínima cantidad de caracteres posible. Del mismo modo, _regexp golf_ es la práctica de escribir una expresión regular tan pequeña como sea posible para que coincida con un patrón dado, y sólo ese patrón.
 
-(((boundary)))(((matching)))For each of the following items, write a ((regular
-expression)) to test whether any of the given substrings occur in a
-string. The regular expression should match only strings containing
-one of the substrings described. Do not worry about word boundaries
-unless explicitly mentioned. When your expression works, see whether you
-can make it any smaller.
+(((boundary)))(((matching)))Para cada uno de los siguientes elementos, escriba una expresión regular que compruebe si alguna de las subcadenas se produce en una cadena. La expresión regular debe coincidir sólo con cadenas que contengan una de las subcadenas descritas. No se preocupe por los límites de palabras a menos que se mencionen explícitamente. Cuando logre que su expresión funcione, vea si puede lograr reducir la expresión.
 
  1. _car_ and _cat_
  2. _pop_ and _prop_
- 3. _ferret_, _ferry_, and _ferrari_
- 4. Any word ending in _ious_
- 5. A whitespace character followed by a dot, comma, colon, or semicolon
- 6. A word longer than six letters
- 7. A word without the letter _e_
+ 3. _ferret_, _ferry_, y _ferrari_
+ 4. Cualquier palabra que termine en _ious_
+ 5. Un carácter de espacio en blanco seguido de un punto, coma, dos puntos o punto y coma
+ 6. Una palabra de más de seis letras
+ 7. Una palabra sin la letra _e_
 
-Refer to the table in the
-link:09_regexp.html#summary_regexp[chapter summary] for help. Test each
-solution with a few test strings.
+Consulte la tabla del link:09_regexp.html#summary_regexp[resumen del capítulo] para obtener ayuda. Pruebe cada solución con unas cuantas cadenas de prueba.
 
 ifdef::interactive_target[]
 [source,javascript]
@@ -1222,18 +786,12 @@ function verify(regexp, yes, no) {
 ----
 endif::interactive_target[]
 
-=== Quoting style ===
+=== Estilo de citas ===
 
 (((quoting style (exercise))))(((single-quote
-character)))(((double-quote character)))Imagine you have written a
-story and used single ((quotation mark))s throughout to mark pieces
-of dialogue. Now you want to replace all the dialogue quotes with
-double quotes, while keeping the single quotes used in contractions
-like _aren't_.
+character)))(((double-quote character)))Imagine que ha escrito una historia en Ingles y ha usado comillas simples para marcar partes del diálogo. Ahora desea reemplazar todas las citas de diálogo con comillas dobles, manteniendo las comillas simples que se usan en contracciones.
 
-(((replace method)))Think of a pattern that distinguishes these two
-kinds of quote usage and craft a call to the `replace` method that
-does the proper replacement.
+(((replace method)))Piense en un patrón que distinga estos dos tipos de comillado y cree una llamada al método `_replace_` que haga la sustitución adecuada.
 
 ifdef::interactive_target[]
 // test: no
@@ -1247,36 +805,19 @@ console.log(text.replace(/A/g, "B"));
 ----
 endif::interactive_target[]
 
-!!hint!!
+!!pista!!
 
-(((quoting style (exercise))))(((boundary)))The most obvious solution
-is to only replace quotes with a nonword character on at least one
-side. Something like `/\W'|'\W/`. But you also have to take the start
-and end of the line into account.
+(((quoting style (exercise))))(((boundary)))La solución más obvia es reemplazar las citas con un carácter sin palabras al menos en uno de los lados. Algo como `_/\W'|'\W/_`, pero también tenga en cuenta el principio y el final de cada línea.
 
-(((grouping)))(((replace method)))In addition, you must ensure that
-the replacement also includes the characters that were matched by the
-`\W` pattern so that those are not dropped. This can be done by
-wrapping them in ((parentheses)) and including their groups in the
-replacement string (`$1`, `$2`). Groups that are not matched will be
-replaced by nothing.
+(((grouping)))(((replace method)))Además, debe asegurarse de que el reemplazo también incluya los caracteres que coincidan con el patrón `_\W_` para que no se eliminen. Esto se puede hacer envolviéndolos entre paréntesis e incluyendo sus grupos en la cadena de reemplazo (`_$1_`, `_$2_`). Los grupos que no coincidan serán reemplazados por nada.
 
-!!hint!!
+!!pista!!
 
 === Numbers again ===
 
-(((number)))A series of ((digit))s can be matched by the simple
-regular expression `/\d+/`.
+(((number)))Una serie de dígitos puede ser igualada por la expresión regular simple `_/\d+/_`.
 
-(((sign)))(((fractional number)))(((syntax)))(((minus)))(((plus
-character)))(((exponent)))(((scientific notation)))(((period
-character)))Write an expression that matches only JavaScript-style
-numbers. It must support an optional minus _or_ plus sign in front of
-the number, the decimal dot, and exponent notation—`5e-3` or ++1E10++—
-again with an optional sign in front of the exponent. Also note that
-it is not necessary for there to be digits in front of or after the
-dot, but the number cannot be a dot alone. That is, `.5` and `5.`
-are valid JavaScript numbers, but a lone dot _isn't_.
+(((sign)))(((fractional number)))(((syntax)))(((minus)))(((plus character)))(((exponent)))(((scientific notation)))(((period character)))Escriba una expresión que coincida sólo con los números válidos para JavaScript. Debe soportar un signo positivo o negativo adicional delante del número, el punto decimal y la notación de exponente `_5e-3_` o ++_1E10_++- tambien con la opcion de un signo delante del exponente. Observe también que no es necesario que haya dígitos delante o después del punto, pero el número no puede ser solamente un punto, es decir, `_.5_` y `_5._` son números JavaScript válidos, pero un punto solitario no lo es.Write an expression that matches only JavaScript-style
 
 ifdef::interactive_target[]
 // test: no
@@ -1300,24 +841,15 @@ var number = /^...$/;
 ----
 endif::interactive_target[]
 
-!!hint!!
+!!pista!!
 
-(((regular expression,escaping)))(((backslash character)))First, do
-not forget the backslash in front of the dot.
+(((regular expression,escaping)))(((backslash character)))En primer lugar, no se olvide de la barra invertida delante del punto.
 
-Matching the optional ((sign)) in front of the ((number)), as well as
-in front of the ((exponent)), can be done with `[+\-]?` or `(\+|-|)`
-(plus, minus, or nothing).
+Se puede hacer coincidir el signo opcional delante del número, así como delante del exponente, con `_[+\-]?_` o `_(\+|-|)_` (más, menos o nada).
 
-(((pipe character)))The more complicated part of the exercise is the
-problem of matching both `"5."` and `".5"` without also matching
-`"."`. For this, a good solution is to use the `|` operator to
-separate the two cases—either one or more digits optionally followed
-by a dot and zero or more digits _or_ a dot followed by one or more
-digits.
+(((pipe character)))La parte más complicada del ejercicio es el problema de coincidir con `_"5."_` y `_".5"_` sin igualar también `_"."_` . Para ello, una buena solución es utilizar el operador `_|_` para separar los dos casos: uno o más dígitos opcionalmente seguido por un punto y cero o más dígitos o un punto seguido por uno o más dígitos.
 
 (((exponent)))(((case sensitivity)))(((regular
-expression,flags)))Finally, to make the _e_ case-insensitive, either
-add an `i` option to the regular expression or use `[eE]`.
+expression,flags)))Por último, para que en el caso del carácter _e_ no distinga entre mayúsculas y minúsculas, agregue una opción `_i_` a la expresión regular o utilice `_[eE]_`.
 
-!!hint!!
+!!pista!!
