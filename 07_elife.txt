@@ -584,7 +584,7 @@ LifelikeWorld.prototype.letAct = function(critter, vector) {
       this.grid.set(vector, null);
   }
 };
-----
+    ----
 (((electronic life)))(((function,as value)))(((call method)))(((this)))El nuevo método _letAct_ comprueba primero si se ha devuelto una acción, si existe una (función de controlador) para este tipo de acción y, por último, si ese controlador devuelve _true_, lo que indica que se ha tratado correctamente la acción. 
 
 Tenga en cuenta el uso de _call_ para dar al manejador acceso al mundo a través de _this_.
@@ -744,11 +744,10 @@ var valley = new LifelikeWorld(
 );
 ----
 
-
-ifdef::interactive_target[]
-
 (((animation)))(((simulation)))Veamos ver ocurre cuando ejecutamos este codigo.
 (!book These snapshots illustrate a typical run of this world.!)
+
+ifdef::interactive_target[]
 
 // start_code
 // test: no
@@ -758,9 +757,54 @@ ifdef::interactive_target[]
 animateWorld(valley);
 ----
 
-(((stability)))(((reproduction)))(((extinction)))(((starvation)))La mayoría de las veces, las plantas se multiplican y se expanden con bastante rapidez, pero luego la abundancia de alimentos causa una explosión poblacional de los herbívoros, que proceden a eliminar todas o casi todas las plantas, resultando en un hambre masiva de las criaturas. A veces, el ecosistema se recupera y comienza otro ciclo. En otras ocasiones, una de las especies muere completamente. Si son los herbívoros, todo el espacio se llenará de plantas. Si son las plantas, las criaturas restantes mueren de hambre, y el valle se convierte en una tierra baldía desolada. Ah, la crueldad de la naturaleza.
-
 endif::interactive_target[]
+
+ifdef::book_target[]
+
+----
+############################  ############################
+#####                 ######  ##### **              ######
+##   ***   O             *##  ##  ** *            O     ##
+#   *##*          **     *##  #  **##                   ##
+#    **           ##*     *#  #  **  O          ##O      #
+#                 ##*      #  #   *O      * *   ##       #
+#                 ##  O    #  #            ***  ##     O #
+#           #*      O      #  #**         #***           #
+#*          #**  O         #  #**      O  #****          #
+#*   O    O ##*          **#  #***        ##***     O    #
+##*        ###*          ###  ##**       ###**    O    ###
+############################  ############################
+
+############################  ############################
+#####O O              ######  #####  O              ######
+##                        ##  ##                        ##
+#    ##O                  ##  #    ##            O      ##
+#           O  O *##       #  #                 ##       #
+#  O    O    O  **##    O  #  #                 ##       #
+#               **##     O #  #               O ## *     #
+#           #   *** *      #  #           #  O           #
+#           # O*****  O    #  #        O  #   O          #
+#           ##******       #  #           ##    O     O  #
+##         ###******     ###  ##         ### O         ###
+############################  ############################
+
+############################  ############################
+#####                 ######  #####                 ######
+##                        ##  ##                 **  *  ##
+#    ##                   ##  #    ##            *****  ##
+#                 ##       #  #                 ##****   #
+#                 ##* *    #  #                 ##*****  #
+#              O  ## *     #  #                 ##****** #
+#           #              #  #           #       ** **  #
+#           #              #  #           #              #
+#           ##             #  #           ##             #
+##         ###           ###  ##         ###           ###
+############################  ############################
+----
+
+endif::book_target[]
+
+(((stability)))(((reproduction)))(((extinction)))(((starvation)))La mayoría de las veces, las plantas se multiplican y se expanden con bastante rapidez, pero luego la abundancia de alimentos causa una explosión poblacional de los herbívoros, que proceden a eliminar todas o casi todas las plantas, resultando en un hambre masiva de las criaturas. A veces, el ecosistema se recupera y comienza otro ciclo. En otras ocasiones, una de las especies muere completamente. Si son los herbívoros, todo el espacio se llenará de plantas. Si son las plantas, las criaturas restantes mueren de hambre, y el valle se convierte en una tierra baldía desolada. Ah, la crueldad de la naturaleza.
 
 == Ejercicios ==
 
