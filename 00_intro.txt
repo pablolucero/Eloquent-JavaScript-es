@@ -8,7 +8,7 @@ que hagan. Las computadoras son tan comunes como los desatornilladores hoy en d�
 pero tienen mucha más complejidad oculta y, por lo tanto, son más difíciles de
 operar y entender. Para muchos siguen siendo cosas extrañas, un poco amenazadoras.
 
-image::img/generated/computer.png[alt="Comunicándose con una computadora"]
+image::img/computer.svg[alt="Comunicándose con una computadora"]
 
 (((interfaz gráfica de usuario)))Hemos encontrado dos formas efectivas
 de cerrar la brecha ente nosotros, suaves organismos biológicos
@@ -228,7 +228,7 @@ Y lo más importante es que ya no hay necesidad de especificar la forma en que
 queremos que nuestro programa salte de atrás para adelante. La construcción del
 lenguaje `while` se encarga de eso. Continúa ejecutándo el bloque (dentro de las
 llaves) debajo de él mientras la condición que se le dio se mantenga. Esa
-condición es `conteo <= 10`, lo que significa "++conteo++ es menor o igual que 10". 
+condición es `conteo <= 10`, lo que significa "++conteo++ es menor o igual que 10".
 Ya no tenemos que crear un valor temporal y compararlo con 0, lo cuál era un
 detalle sin interés para nosotros. Parte del poder de los lenguajes de
 programación es que estos se encargan de los detalles que no nos interesan.
