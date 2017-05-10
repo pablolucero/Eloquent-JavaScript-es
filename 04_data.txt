@@ -447,25 +447,24 @@ Una vez que tiene suficientes datos, quiere calcular la ((correlación))
 entre su ardillamiento y cada uno de los eventos e, idealmente, aprender
 algo útil de esas correlaciones.
 
-(((correlation)))_Correlation_ is a measure of ((dependence)) between
-((variable))s (“variables” in the statistical sense, not the
-JavaScript sense). It is usually expressed as a coefficient that
-ranges from -1 to 1. Zero correlation means the variables are not
-related, whereas a correlation of one indicates that the two are
-perfectly related—if you know one, you also know the other. Negative
-one also means that the variables are perfectly related but that they
-are opposites—when one is true, the other is false.
+(((correlación)))La _Correlación_ es una medida de ((dependencia)) entre
+((variable))s (“variables” en el sentido de la estadística, no en el de
+JavaScript). Es expresada usualmente como un coeficiente que va del -1 al
+1. Una correlación de 0 significa que las variables no están relacionadas, mientras
+que una correlación de uno indica que están perfectamente relacionadas: si conoces una,
+entonces conoces la otra. El uno negativo también significa que están perfectamente
+relacionadas pero que son opuestas, cuando una es verdadera, la otra es falsa.
 
-(((phi coefficient)))For binary (Boolean) variables, the _phi_
-coefficient (_ϕ_) provides a good measure of correlation and is
-relatively easy to compute. To compute _ϕ_, we need a ((table)) _n_
-that contains the number of times the various combinations of the two
-variables were observed. For example, we could take the event of
-eating ((pizza)) and put that in a table like this:
+(((coeficiente phi))) Para variables binarias (Booleanas), el coeficiente _phi_ 
+(_ϕ_) da una buena medida de correlación y es relativamente fácil de calcular.
+Para calcular _ϕ_ necesitamos una ((tabla)) _n_ que contine el número de veces
+que varias combinaciones de variables fueron observadas. Por ejemplo, podríamos
+tomar el evento de comer ((pizza)) y ponerlo en la tabla de la siguiente manera:
 
-image::img/pizza-squirrel.svg[alt="Eating pizza versus turning into a squirrel",width="7cm"]
+image::img/pizza-squirrel.svg[alt="Comer pizza vs convertirse en ardilla.",width="7cm"]
 
-_ϕ_ can be computed using the following formula, where _n_ refers to the table:
+_ϕ_ puede ser calculado usando la siguiente fórmula, en donde _n_ se refiere a la
+tabla:
 
 ifdef::html_target[]
 
@@ -492,99 +491,98 @@ pass:[\begin{equation}\varphi = \frac{n_{11}n_{00}-n_{10}n_{01}}{\sqrt{n_{1\bull
 
 endif::tex_target[]
 
-The notation (!html _n_~01~!)(!tex pass:[$n_{01}$]!) indicates the
-number of measurements where the first variable (squirrelness) is false
-(0) and the second variable (pizza) is true (1). In this
-example, (!html _n_~01~!)(!tex pass:[$n_{01}$]!) is 9.
+La notación (!html _n_~01~!)(!tex pass:[$n_{01}$]!) indica el
+número de medidas en el que la primer vairiable (ardillificación) es falsa (0)
+y la segunda variable (pizza) es verdadera (1). En este ejemplo, (!html _n_~01~!)(!tex pass:[$n_{01}$]!) es 9.
 
-The value (!html _n_~1•~!)(!tex pass:[$n_{1\bullet}$]!) refers to the
-sum of all measurements where the first variable is true, which is 5
-in the example table. Likewise, (!html _n_~•0~!)(!tex pass:[$n_{\bullet0}$]!)
-refers to the sum of the measurements where the second variable is false.
 
-(((correlation)))(((phi coefficient)))So for the pizza table, the part
-above the division line (the dividend) would be 1×76 - 4×9 = 40, and
-the part below it (the divisor) would be the square root of
-5×85×10×80, or (!html √340000!)(!tex pass:[$\sqrt{340000}$]!). This
-comes out to _ϕ_ ≈ 0.069, which is tiny. Eating ((pizza)) does not
-appear to have influence on the transformations.
+El valor (!html _n_~1•~!)(!tex pass:[$n_{1\bullet}$]!) se refiere a la suma
+de todas las medidas en donde la primera variable es verdadera, que es 5 en la tabla de
+ejemplo. De la misma manera, (!html _n_~•0~!)(!tex pass:[$n_{\bullet0}$]!)
+se refiere a la suma de medidas en donde la segunda variable es falsa.
 
-== Computing correlation ==
+(((correlación)))(((coeficiente phi))) Así que para la tabla de la pizza,
+la parte de arriba de la línea de división (el dividendo) sería 1×76 - 4×9 = 40,
+y la parte de debajo de la línea (el divisor) sería la raíz cuadrada de 
+5×85×10×80, o (!html √340000!)(!tex pass:[$\sqrt{340000}$]!). Esto da como resultado
+_ϕ_ ≈ 0.069, que es muy pequeño. Comer ((pizza)) no parece tener influencia en las transformaciones.
 
-(((array,as table)))(((nesting,of arrays)))We can represent a
-two-by-two ((table)) in JavaScript with a four-element array (`[76, 9,
-4, 1]`). We could also use other representations, such as an array
-containing two two-element arrays (`[[76, 9], [4, 1]]`) or an object
-with property names like `"11"` and `"01"`, but the flat array is
-simple and makes the expressions that access the table pleasantly
-short. We'll interpret the indices to the array as two-((bit))
-((binary number)), where the leftmost (most significant) digit refers
-to the squirrel variable and the rightmost (least significant) digit
-refers to the event variable. For example, the binary number `10`
-refers to the case where Jacques did turn into a squirrel, but the
-event (say, "pizza") didn't occur. This happened four times. And since
-binary `10` is 2 in decimal notation, we will store this number at
-index 2 of the array.
+== Calculando correlaciones ==
 
-(((phi coefficient)))(((phi function)))This is the function that
-computes the _ϕ_ coefficient from such an array:
+(((array,como tabla)))(((anidado, de arrays)))Podemos representar una
+((tabla)) de dos por dos en JavaScript con un array de 4 elementos
+(`[76, 9, 4, 1]`). Podríamos también usar otras representaciones, como
+un array que contenga dos arrays de dos elementos cada uno (`[[76, 9], [4, 1]]`) o como
+un objeto con nombre de propiedades como `"11"` y `"01"`, pero el array
+plano es simple y hace que las expresiones de acceso a la tabla sean
+convenientemente cortas. Interpretaremos los índices del array como
+un ((número binario)) de dos ((bit))s, en donde el dígito más a la izquierda
+(el más siginificativo) se refiere a la variable de la ardilla y el más a
+la derecha (menos significativo) se refiere a la variable del evento. Por ejemplo, 
+el número binario `10` se refiere al caso en que Jacques se convirtió en 
+ardilla, pero el evento (digamos, "pizza"), no ocurrió. Esto pasó 4 veces. Y como
+el binario `10` es 2 en notación decimal, guardaremos ese número en el índice 2
+del array.
+
+(((coeficiente phi)))(((función phi)))Esta es la función que calcula el coeficiente
+_ϕ_ del ese array:
 
 // test: clip
 // include_code strip_log
 
 [source,javascript]
 ----
-function phi(table) {
-  return (table[3] * table[0] - table[2] * table[1]) /
-    Math.sqrt((table[2] + table[3]) *
-              (table[0] + table[1]) *
-              (table[1] + table[3]) *
-              (table[0] + table[2]));
+function phi(tabla) {
+  return (tabla[3] * tabla[0] - tabla[2] * tabla[1]) /
+    Math.sqrt((tabla[2] + tabla[3]) *
+              (tabla[0] + tabla[1]) *
+              (tabla[1] + tabla[3]) *
+              (tabla[0] + tabla[2]));
 }
 
 console.log(phi([76, 9, 4, 1]));
 // → 0.068599434
 ----
 
-(((square root)))(((Math.sqrt function)))This is simply a direct
-translation of the _ϕ_ formula into JavaScript. `Math.sqrt` is the
-square root function, as provided by the `Math` object in a standard
-JavaScript environment. We have to sum two fields from the table to
-get fields like (!html n~1•~!)(!tex pass:[$n_{1\bullet}$]!) because
-the sums of rows or columns are not stored directly in our data
-structure.
+(((raíz cuadrada)))(((funcieon Math.sqrt)))Esto es simplemente una
+traducción directa de la fómula de la _ϕ_ a JavaScript. `Math.sqrt`
+es la función raíz cuadrada, provista por el objeto `Math` en un entorno
+de JavaScript estándar. Tenemos que sumar los dos campos de la tabla
+para obtener campos como (!html n~1•~!)(!tex pass:[$n_{1\bullet}$]!)
+porque la suma de las filas o columnas no están guardadas directamente en
+nuestra estructura de datos.
 
-(((JOURNAL data set)))Jacques kept his journal for three months. The
-resulting ((data set)) is available in the coding sandbox for this
-chapter(!book (http://eloquentjavascript.net/code#4[_eloquentjavascript.net/code#4_])!),
-where it is stored in the `JOURNAL` variable, and in a downloadable
+(((set de datos DIARIO)))Jacques mantuvo su diario por tres meses. El
+((set de datos)) resultante está disponible en el área de código para
+este capítulo(!book (http://eloquentjavascript.net/code#4[_eloquentjavascript.net/code#4_])!),
+en donde está guardada la variable `DIARIO`, y como descarga en
 http://eloquentjavascript.net/code/jacques_journal.js[file].
 
-(((tableFor function)))(((hasEvent function)))To extract a two-by-two
-((table)) for a specific event from this journal, we must loop over
-all the entries and tally up how many times the event occurs in
-relation to squirrel transformations.
+(((función tablaPara)))(((función tieneEvento)))Para extraer una ((tabla)) de 2 x 2
+po un evento específico de este diario, tenemos que iterar sobre todas las
+entradas y contar cuántas veces el evento ocurre en relación con las
+transformaciones a ardilla.
 
 // include_code strip_log
 
 [source,javascript]
 ----
-function hasEvent(event, entry) {
-  return entry.events.indexOf(event) != -1;
+function tieneEvento(evento, entrada) {
+  return entrada.eventos.indexOf(evento) != -1;
 }
 
-function tableFor(event, journal) {
-  var table = [0, 0, 0, 0];
-  for (var i = 0; i < journal.length; i++) {
-    var entry = journal[i], index = 0;
-    if (hasEvent(event, entry)) index += 1;
-    if (entry.squirrel) index += 2;
-    table[index] += 1;
+function tablaPara(evento, diario) {
+  var tabla = [0, 0, 0, 0];
+  for (var i = 0; i < diario.length; i++) {
+    var entrada = diario[i], index = 0;
+    if (tieneEvento(evento, entrada)) index += 1;
+    if (entrada.ardilla) index += 2;
+    tabla[index] += 1;
   }
-  return table;
+  return tabla;
 }
 
-console.log(tableFor("pizza", JOURNAL));
+console.log(tabalaPara("pizza", DIARIO));
 // → [76, 9, 4, 1]
 ----
 
