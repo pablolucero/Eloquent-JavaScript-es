@@ -586,12 +586,12 @@ console.log(tabalaPara("pizza", DIARIO));
 // → [76, 9, 4, 1]
 ----
 
-(((array,searching)))(((indexOf method)))The `hasEvent` function tests
-whether an entry contains a given event. Arrays have an `indexOf`
-method that tries to find a given value (in this case, the event name)
-in the array and returns the index at which it was found or -1 if it
-wasn't found. So if the call to `indexOf` doesn't return -1, then we
-know the event was found in the entry.
+(((array, búsqueda)))(((método indexOf))) La función `tieneEvento` verifica
+si una entrada tiene una entrada dada. Los arrays tienen un método 
+`indexOf` que intenta encontrar un valor dado (en este caso, el nombre del evento)
+en el array y regresan el índice en el cuál fue encontrado o -1 si no se encontró.
+Así que si la llamada a `indexOf` no regresa -1, entonces sabemos que el evento
+fue encontrado en la entrada.
 
 (((array,indexing)))The body of the loop in `tableFor` figures
 out which box in the table each journal entry falls into by checking
