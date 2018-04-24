@@ -243,7 +243,7 @@ cadenas de texto mientras coincidan al principio y al final.
 cosa puede estar entre comillas, y JavaScript creará una cadena. Pero unos
 cuantos caracteres son un poco difíciles. Puedes imaginar que poner
 comillas dentro de comillas puede ser difícil. _Newlines_ (el carácter
-salto de línea, lo que obtines cuando presionas Enter), tampoco puede
+salto de línea, lo que obtienes cuando presionas Enter), tampoco puede
 ser introducido entre comillas. La cadena tiene que permanecer en una
 sola línea.
 
