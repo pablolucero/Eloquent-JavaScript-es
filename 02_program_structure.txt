@@ -74,7 +74,7 @@ omitir el punto y coma al final de una declaración. En otros casos, tiene que
 estar allí, o la siguiente ((linea)) será tratada como parte de la misma
 declaración. Las reglas para cuando se puede omitir con seguridad son algo
 complejas y propensas a errores. En este libro, cada declaración que necesite un
-punto y coma siempre será terminada por un punto y coma4. Te recomiendo que hagas lo
+punto y coma siempre será terminada por un punto y coma. Te recomiendo que hagas lo
 mismo en tus propios programas, al menos hasta que hayas aprendido más sobre
 sutilezas involucradas en omitir el punto y coma.
 
