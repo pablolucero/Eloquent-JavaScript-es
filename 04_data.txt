@@ -753,10 +753,9 @@ console.log(phi(tableFor("peanut teeth", JOURNAL)));
 // → 1
 ----
 
-Well, that's unmistakable! The phenomenon occurs precisely when
-Jacques eats ((peanuts)) and fails to brush his teeth. If only he
-weren't such a slob about dental hygiene, he'd have never even noticed
-his affliction.
+Bueno, eso es inconfundible! El fenómeno ocurre precisamente cuando 
+Jacques come maní y no se lava los dientes. Si tan solo no fuera tan 
+descuidado con la higiene dental, nunca habría notado su aflicción.
 
 Knowing this, Jacques simply stops eating peanuts altogether and finds
 that this completely puts an end to his transformations.
