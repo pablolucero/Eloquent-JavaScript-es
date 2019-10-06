@@ -732,12 +732,12 @@ for (var event in correlations) {
 // → peanuts:        0.5902679812
 ----
 
-A-ha! There are two factors whose ((correlation)) is clearly stronger
-than the others. Eating ((peanuts)) has a strong positive effect on
-the chance of turning into a squirrel, whereas brushing his teeth has
-a significant negative effect.
+A-ha! Hay dos factores cuya correlación es claramente más fuerte que 
+los demás. Comer maní tiene un fuerte efecto positivo sobre la 
+posibilidad de convertirse en una ardilla, mientras que cepillarse 
+los dientes tiene un efecto negativo significativo.
 
-Interesting. Let's try something.
+Interesante. Probemos algo.
 
 // include_code strip_log
 
